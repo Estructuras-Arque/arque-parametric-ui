@@ -1,0 +1,70 @@
+<template>
+  <svg id="arrow" width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+    <!-- Created with Method Draw - http://github.com/duopixel/Method-Draw/ -->
+    <g>
+      <title>background</title>
+
+      <g
+        display="none"
+        overflow="visible"
+        y="0"
+        x="0"
+        height="100%"
+        width="100%"
+        id="canvasGrid"
+      ></g>
+    </g>
+    <g>
+      <title>Layer 1</title>
+      <line
+        stroke-linecap="undefined"
+        stroke-linejoin="undefined"
+        id="svg_1"
+        y2="315.45313"
+        x2="118.5"
+        y1="103.45313"
+        x1="350.5"
+        stroke-width="8"
+        stroke="#000"
+        fill="none"
+      />
+      <line
+        stroke-linecap="undefined"
+        stroke-linejoin="undefined"
+        id="svg_2"
+        y2="315.45313"
+        x2="118.5"
+        y1="103.45313"
+        x1="350.5"
+        stroke-width="8"
+        stroke="#000"
+        fill="none"
+      />
+      <line
+        stroke-linecap="undefined"
+        stroke-linejoin="undefined"
+        id="svg_4"
+        y2="315.45313"
+        x2="118.5"
+        y1="103.45313"
+        x1="350.5"
+        stroke-width="8"
+        stroke="#000"
+        fill="none"
+      />
+      <line
+        transform="rotate(90 225.6428527832031,429.45312500000006) "
+        stroke-linecap="undefined"
+        stroke-linejoin="undefined"
+        id="svg_5"
+        y2="535.45312"
+        x2="109.64286"
+        y1="323.45312"
+        x1="341.64286"
+        stroke-width="8"
+        stroke="#000"
+        fill="none"
+      />
+    </g>
+  </svg>
+</template>
