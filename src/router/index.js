@@ -4,6 +4,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import LogIn from "../views/LogIn.vue";
 import Viewer from "../views/Viewer.vue";
+import About from "../views/About.vue";
 
 import Auth from "@okta/okta-vue";
 
@@ -35,6 +36,14 @@ const routes = [{
         path: "/app",
         name: "Viewer",
         component: Viewer
+            // meta: {
+            //   requiresAuth: true
+            // }
+    },
+    {
+        path: "/about",
+        name: "About",
+        component: About
             // meta: {
             //   requiresAuth: true
             // }

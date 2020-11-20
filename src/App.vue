@@ -13,28 +13,18 @@ export default {
   name: "App",
   data: function() {
     return {
-      windowSize: {
-        width: 0,
-        height: 0
-      },
-      isDesktop: true,
       authenticated: false,
       auth: null
     };
   },
 
   created() {
-    window.addEventListener("resize", this.handleResize);
-    this.handleResize();
     this.isAuthenticated();
     this.auth = this.$auth;
   },
-  destroyed() {
-    window.removeEventListener("resize", this.handleResize);
-  },
+
   watch: {
     // Everytime the route changes, check for auth status
-
     $route: "isAuthenticated"
   },
   methods: {
@@ -50,12 +40,6 @@ export default {
     },
     login() {
       this.$auth.loginRedirect("/app");
-    },
-    handleResize() {
-      this.windowSize.width = window.innerWidth;
-      // console.log(this.windowSize.width);
-      this.windowSize.height = window.innerHeight;
-      // console.log(this.windowSize.height);
     }
   }
 };
@@ -70,6 +54,7 @@ $primary-invert: findColorInvert($primary);
 $twitter: #4099ff;
 $twitter-invert: findColorInvert($twitter);
 $info: #ff9900;
+$info-invert: $light;
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')
 $colors: (
   "white": (
@@ -118,7 +103,9 @@ $colors: (
 $link: $primary;
 $link-invert: $primary-invert;
 $link-focus-border: $primary;
-
+$tabs-toggle-link-active-background-color: $dark;
+$tabs-link-active-color: $dark;
+$tabs-link-color: $grey-light;
 // Import Bulma and Buefy styles
 @import "~bulma";
 @import "~buefy/src/scss/buefy";

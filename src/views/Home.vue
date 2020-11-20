@@ -17,21 +17,22 @@
               Documentation
             </b-navbar-item>
             <b-navbar-dropdown collapsible label="About Us">
+              <b-navbar-item href="/about">The team</b-navbar-item>
               <b-navbar-item
                 href="http://estructurasarque.com/arque-spatial-systems/"
               >
                 Our Services
               </b-navbar-item>
-              <b-navbar-item href="mailto:spatial@estructurasarque.com">
+              <b-navbar-item @click="$router.push({ name: 'About' })">
                 Contact Us
               </b-navbar-item>
             </b-navbar-dropdown>
           </template>
 
-          <template slot="end">
+          <template slot="end" v-if="authIsActive == true">
             <b-navbar-item tag="div">
               <div class="buttons">
-                <a class="button is-ghost is-inverted">
+                <a class="button is-ghost">
                   <strong>Sign up</strong>
                 </a>
                 <a class="button is-info is-outlined">
@@ -69,6 +70,21 @@
               P A R A M E T R I C . U I
             </h1>
           </transition>
+
+          <transition name="swing">
+            <b-tooltip
+              type="is-white"
+              label="Go to app"
+              position="is-bottom"
+              :active="true"
+            >
+              <b-button
+                v-if="showTitle"
+                @click="$router.push({ name: 'Viewer' })"
+                >Start</b-button
+              ></b-tooltip
+            ></transition
+          >
         </div>
       </div>
 
@@ -98,9 +114,11 @@ export default {
   props: ["isDesktop"],
   data() {
     return {
+      authIsActive: false,
       showLogo: false,
       showTitle: false,
-      showBackB: false
+      showBackB: false,
+      startButton: false
     };
   },
   components: {
@@ -123,7 +141,11 @@ export default {
       setTimeout(this.ShowTitle, 1000);
     },
     ShowTitle() {
+      //       var isActive = false
+      //       setTimeout(isActive = true, 1000);
+      // if (isActive == true) {
       this.showTitle = true;
+      // }
     },
     LoadBackB() {
       setTimeout(this.ShowBackB, 2500);

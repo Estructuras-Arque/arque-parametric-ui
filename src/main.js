@@ -5,6 +5,8 @@ import router from "./router";
 import store from "./store";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import VueCountryCode from "vue-country-code";
+
+
 // internal icons
 import {
     faCheck,
@@ -40,7 +42,13 @@ import {
     faEnvelope,
     faBuilding,
     faRedo,
-    faWindowRestore
+    faWindowRestore,
+    faCloudDownloadAlt,
+    faDrawPolygon,
+    faRuler,
+    faGripLinesVertical,
+    faGripLines,
+    faBorderAll
 } from "@fortawesome/free-solid-svg-icons";
 import {} from "@fortawesome/free-regular-svg-icons";
 import {
@@ -89,7 +97,13 @@ library.add(
     faSignature,
     faBuilding,
     faRedo,
-    faWindowRestore
+    faWindowRestore,
+    faCloudDownloadAlt,
+    faDrawPolygon,
+    faRuler,
+    faGripLinesVertical,
+    faGripLines,
+    faBorderAll
 );
 Vue.component("vue-fontawesome", FontAwesomeIcon);
 import Buefy from "buefy";
@@ -99,6 +113,7 @@ Vue.use(Buefy, {
     defaultIconPack: "fas" || "far" || "fab"
 });
 Vue.use(VueCountryCode);
+
 Vue.config.productionTip = false;
 
 new Vue({
