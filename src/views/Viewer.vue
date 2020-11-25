@@ -1,309 +1,198 @@
 <template>
-  <div id="viewer">
-    <b-loading
-      :is-full-page="true"
-      :active="isLoading"
-      :can-cancel="false"
-      class="viewer-loading"
-    >
-    </b-loading>
-    <b-navbar id="viewer-navbar" class="has-background-light" shadow>
-      <template slot="brand">
-        <b-navbar-item href="http://estructurasarque.com">
-          <img
-            src="http://estructurasarque.com/wp-content/uploads/2017/11/logo-web-arque.png"
-            alt="Lightweight UI components for Vue.js based on Bulma"
-          />
-        </b-navbar-item>
-      </template>
-      <template type="is-light" slot="start">
-        <b-navbar-item href="/">
-          Home
-        </b-navbar-item>
-        <b-navbar-item href="#">
-          Documentation
-        </b-navbar-item>
-        <b-navbar-dropdown collapsible label="About Us">
-          <b-navbar-item
-            href="http://estructurasarque.com/arque-spatial-systems/"
-          >
-            Our Services
-          </b-navbar-item>
-          <b-navbar-item href="mailto:spatial@estructurasarque.com">
-            Contact Us
-          </b-navbar-item>
-        </b-navbar-dropdown>
-      </template>
-
-      <template slot="end">
-        <b-navbar-item tag="div">
-          <div class="buttons">
-            <a class="button is-info is-outlined">
-              <strong>Sign Out</strong>
-            </a>
-          </div>
-        </b-navbar-item>
-      </template>
-    </b-navbar>
-    <!-- desktop format -->
-    <div class="columns is-desktop is-gapless is-fullheight">
-      <!-- control panel -->
-      <div
-        id="control-panel"
-        class="column is-one-fifth has-background-light is-higher"
+  <div class="viewer">
+    <section class="hero is-fullheight is-bold">
+      <!-- Hero head: will stick at the top -->
+      <b-loading
+        :is-full-page="true"
+        :active="isLoading"
+        :can-cancel="false"
+        class="viewer-loading"
       >
-        <nav class="panel">
-          <b-tabs v-model="activeTab" size="is-small" type="is-boxed">
-            <b-tab-item label="Model" icon="cogs">
-              <div class="fixed-params">
-                <p class="title is-6 has-text-weight-medium">
-                  Structure's Parameters:
-                </p>
-              </div>
-              <b-field
-                custom-class="has-text-danger"
-                message="Select your desired topology"
+      </b-loading>
+      <!-- navbar -->
+      <div class="hero-head has-background-light">
+        <b-navbar class="navbar" id="navbar-viewer">
+          <template slot="brand">
+            <b-navbar-item href="http://estructurasarque.com">
+              <img
+                src="http://estructurasarque.com/wp-content/uploads/2017/11/logo-web-arque.png"
+                alt="Lightweight UI components for Vue.js based on Bulma"
+              />
+            </b-navbar-item>
+          </template>
+          <template slot="start">
+            <b-navbar-item href="#">
+              Documentation
+            </b-navbar-item>
+            <b-navbar-dropdown collapsible label="About Us">
+              <b-navbar-item href="/about">The team</b-navbar-item>
+              <b-navbar-item
+                href="http://estructurasarque.com/arque-spatial-systems/"
               >
-                <div class="pr-2" id="topologies-button">
-                  <b-dropdown
-                    class="pb-1"
-                    :scrollable="isScrollable"
-                    :max-height="maxHeight"
-                    v-model="currentTopology"
-                    aria-role="list"
-                  >
-                    <button
-                      class="button is-small is-info is-outlined"
-                      type="button"
-                      slot="trigger"
-                    >
-                      <template>
-                        <b-icon :icon="currentTopology.icon"></b-icon>
-                        <p
-                          class="is-hidden-desktop-only	is-hidden-tablet-only is-hidden-mobile-only"
-                        >
-                          <span>{{ currentTopology.name }}</span>
-                        </p>
-                      </template>
-                      <b-icon icon="angle-down"></b-icon>
-                    </button>
+                Our Services
+              </b-navbar-item>
+              <b-navbar-item @click="$router.push({ name: 'About' })">
+                Contact Us
+              </b-navbar-item>
+            </b-navbar-dropdown>
+          </template>
 
-                    <b-dropdown-item
-                      v-for="(topo, index) in topologies"
-                      :key="index"
-                      :value="topo"
-                      aria-role="listitem"
-                    >
-                      <div class="media">
-                        <b-icon class="media-left" :icon="topo.icon"></b-icon>
-                        <div class="media-content">
-                          <h3>{{ topo.name }}</h3>
-                        </div>
-                      </div>
-                    </b-dropdown-item>
-                  </b-dropdown>
-                </div>
-                <div id="reset-button">
-                  <b-tooltip
-                    type="is-info"
-                    multilined
-                    label="Resetting the parameters to its default value, this action is irreversible"
-                    position="is-right"
-                  >
-                    <button class="button is-small">
-                      <b-icon icon="sync-alt" size="is-small"> </b-icon>
-                      <span class="">Reset</span>
-                    </button>
-                  </b-tooltip>
-                </div>
-              </b-field>
-
-              <b-tabs
-                class="pt-5"
-                v-model="parametersTab"
-                size="is-small"
-                type="is-toggle"
-              >
-                <b-tab-item label="Customize" icon="draw-polygon">
-                  <!-- <div id="parameters-content">
-                        Nunc nec velit nec libero vestibulum eleifend. Curabitur
-                        pulvinar congue luctus. Nullam hendrerit iaculis augue
-                        vitae ornare. Maecenas vehicula pulvinar tellus, id
-                        sodales felis lobortis eget.
-                      </div> -->
-                </b-tab-item>
-                <b-tab-item label="Dimensions" icon="ruler">
-                  <div id="parameters-content">
-                    <div v-for="n in 30" :key="n">Example content</div>
-                  </div>
-                </b-tab-item>
-
-                <b-tab-item label="Subdivisons" icon="border-all">
-                  <!-- <div id="parameters-content">
-                        Nunc nec velit nec libero vestibulum eleifend. Curabitur
-                        pulvinar congue luctus. Nullam hendrerit iaculis augue
-                        vitae ornare. Maecenas vehicula pulvinar tellus, id
-                        sodales felis lobortis eget.
-                      </div> -->
-                </b-tab-item>
-                <b-tab-item label="Columns" icon="grip-lines-vertical">
-                  <!-- <div id="parameters-content">
-                        Nunc nec velit nec libero vestibulum eleifend. Curabitur
-                        pulvinar congue luctus. Nullam hendrerit iaculis augue
-                        vitae ornare. Maecenas vehicula pulvinar tellus, id
-                        sodales felis lobortis eget.
-                      </div> -->
-                </b-tab-item>
-              </b-tabs>
-            </b-tab-item>
-            <b-tab-item label="Viewer" disabled icon="tools"> </b-tab-item>
-          </b-tabs>
-        </nav>
-      </div>
-      <!-- shapediver viewer -->
-      <div id="viewport" class="column is-three-fifths has-background-white">
-        Shapediver Viewer
-      </div>
-      <!-- downloads -->
-      <div
-        id="model-info"
-        class="column is-one-fifth has-background-light is-higher"
-      >
-        <b-tabs type="is-boxed" expanded>
-          <b-tab-item icon="info-circle" label="Model Details">
-            <section>
-              <b-collapse
-                class="card"
-                animation="fade"
-                v-for="(collapse, index) of collapses"
-                :key="index"
-                :open="isOpen == index"
-                @open="isOpen = index"
-              >
-                <div
-                  slot="trigger"
-                  slot-scope="props"
-                  class="card-header"
-                  role="button"
+          <template slot="end">
+            <b-navbar-item tag="div">
+              <div class="buttons">
+                <a
+                  class="button is-info is-outlined"
+                  @click="$router.push({ name: 'Home' })"
                 >
-                  <p class="card-header-title">
-                    {{ collapse.title }}
-                  </p>
-                  <a class="card-header-icon">
-                    <b-icon :icon="props.open ? 'angle-down' : 'angle-up'">
-                    </b-icon>
-                  </a>
-                </div>
-                <div class="card-content">
-                  <div class="content">
-                    {{ collapse.text }}
-                  </div>
-                </div>
-              </b-collapse>
-            </section>
-          </b-tab-item>
-          <b-tab-item icon="cloud-download-alt" label="Downloads"></b-tab-item>
-        </b-tabs>
+                  <strong>Sign out</strong>
+                </a>
+              </div>
+            </b-navbar-item>
+          </template>
+        </b-navbar>
       </div>
-    </div>
+
+      <!-- viewer -->
+      <div id="viewer" class="columns is-desktop is-gapless">
+        <!-- control panel -->
+        <control-panel
+          @topology-ready="onTopologyReady"
+          :topologies="topologies"
+          :window-size="windowSize"
+        />
+
+        <!-- shapediver-viewer -->
+        <div
+          class="column has-background-white"
+          :class="
+            windowSize.isDesktop
+              ? 'is-half-desktop is-three-fifths-widescreen is-three-fifths-fullhd'
+              : ''
+          "
+        >
+          <shapediver-viewer
+            :window-size="windowSize"
+            :current-topology="currentTopology"
+            :topologies="topologies"
+            @viewer-ready="onViewerReady"
+          />
+        </div>
+        <!-- model downloads -->
+        <div
+          v-if="windowSize.isDesktop"
+          id="model-info"
+          class="column has-background-light"
+        >
+          <div
+            id="panel-tabs"
+            class="container has-background-white tabs-component"
+          ></div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
+import ControlPanel from "../components/ControlPanel.vue";
+import ShapediverViewer from "../components/ShapediverViewer.vue";
+// import DownloadsPanel from "../components/ShapediverViewer.vue";
+
 export default {
   name: "Viewer",
-
+  props: ["windowSize"],
+  components: {
+    ControlPanel,
+    ShapediverViewer
+    // DownloadsPanel
+  },
   data() {
     return {
-      currentTopology: { name: "Rectangular", ticket: 0, icon: "globe" },
-      isScrollable: true,
-      maxHeight: 200,
-      topologies: [
-        { name: "Rectangular", index: 0, ticket: 0, icon: "globe" },
-        { name: "Arch", index: 1, ticket: 1, icon: "phone" },
-        { name: "Monopich", index: 3, ticket: 3, icon: "cogs" },
-        { name: "Duoopich", index: 4, ticket: 4, icon: "cogs" },
-        { name: "Conical", index: 5, ticket: 5, icon: "cogs" }
-      ],
-      windowSize: {
-        width: 0,
-        height: 0
-      },
-      parametersTab: 1,
-      activeTab: 0,
       isLoading: true,
-      isOpen: 0,
-      collapses: [
+      showRight: true,
+      showLeft: true,
+      currentTopology: {
+        name: "Rectangular",
+        ticket:
+          "22572ea61710ec728bfa3501c0f677911f379317103074c57998495eaca3c1a7034d12c9e47255fa97cfbdf469f79b7e4558f797d4f90a3602e082e271d2155a55a912e0999c769d7b1d864858934ab12b0490504c6a95242cebbacea3d27c765816d53e4982f307d208e92e5f95f766c572b2129ca7-cf75af7365fcd996aef3db010da65c5f",
+        icon: "globe"
+      },
+      topologies: [
         {
-          title: "Dimensions",
-          text: "Text 1"
+          name: "Rectangular",
+          index: 0,
+          ticket:
+            "22572ea61710ec728bfa3501c0f677911f379317103074c57998495eaca3c1a7034d12c9e47255fa97cfbdf469f79b7e4558f797d4f90a3602e082e271d2155a55a912e0999c769d7b1d864858934ab12b0490504c6a95242cebbacea3d27c765816d53e4982f307d208e92e5f95f766c572b2129ca7-cf75af7365fcd996aef3db010da65c5f",
+          icon: "globe"
         },
         {
-          title: "Spatial Frame",
-          text: "Text 2"
+          name: "Arch",
+          index: 1,
+          ticket:
+            "674c96267e7abfc9ad56d2eaed1de3e5040486649a65850b0d5b094ab1f33e45dbb7527877c5fda41adf9b9dfdc83f35e43b7fc852ef188f598f778ba78dbd58ad8f4f81dbeb811eefba6b165c442433fadc80dcce1c4f6f7b63800de38f053a1e824f5c6a8291cfd8fb614fc53a5b6333439d253f4d-bbb6c0f4d591df5bf2e77161f424bd06",
+          icon: "phone"
         },
         {
-          title: "Columns",
-          text: "Text 3"
+          name: "Monopich",
+          index: 3,
+          ticket:
+            "3422a552bddaad005dbe773ddaef0efefca0881f3b1d70db27e3103bb7f336aa62839005315e2aeb8dbf5f5f4bcab44529982a6e35a7af1a78f5d51c13d2c1dd75ea819ed569403b8eee7fa2ff1447adc86e3184c9bf4f1ce4404512a6694fa187b128482804e3079ce784e4dea80182e757bb1cbb7c-38e7ecc6f4bd38bd7147da84e21e801b",
+          icon: "cogs"
+        },
+        {
+          name: "Duoopich",
+          index: 4,
+          ticket:
+            "d96bfde054293d49d4266a9313e62dc971525fd5a962800c35c8c9d7122483f1b21dd3267802e2b1446eaa40f9fe277d797acc75b03b826d4dbcea6e1fa33c94016f0f83a3271c6461e2d9820fdc755fb94f2b1f19381b51970d1b54295e45f9c81f7f75a4cc8b6e0e30ea57792eaa3670e0496cc067-e60364391a0c2eb405acb24c580b2199",
+          icon: "cogs"
         }
+        // { name: "Conical", index: 5, ticket: 5, icon: "cogs" }
       ]
     };
   },
+
   created() {
-    window.addEventListener("resize", this.handleResize);
-    this.handleResize();
     setTimeout(() => {
       this.isLoading = false;
     }, 1000);
   },
-  destroyed() {
-    window.removeEventListener("resize", this.handleResize);
-  },
   methods: {
-    handleResize() {
-      this.windowSize.width = window.innerWidth;
-      // console.log(this.windowSize.width);
-      this.windowSize.height = window.innerHeight;
-      // console.log(this.windowSize.height);
+    onViewerReady() {
+      setTimeout(() => {
+        this.isLoading = false;
+      }, 5000);
+    },
+    onTopologyReady(value) {
+      this.currentTopology = value;
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-#viewer {
-  height: 100vh !important;
-  width: 100% !important;
-  overflow: hidden;
-}
-
-.fixed-params {
-  width: 100%;
-  min-height: 40px;
-  max-height: 50px;
-}
-
-// .is-fullwidth {
-//   width: 100vw;
+// .has-max-mobile {
+//   height: 500px;
 // }
-.is-higher {
-  z-index: 90;
-}
-#control-panel {
-  padding: 0.75rem !important;
-  -webkit-box-shadow: 1px 0px 5px -1px rgba(0, 0, 0, 0.5);
-  box-shadow: 1px 1px 5px -1px rgba(0, 0, 0, 0.5);
+#viewer {
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  height: calc(100vh - 53px) !important;
 }
 #model-info {
-  -webkit-box-shadow: -1px 0px 5px -1px rgba(0, 0, 0, 0.5);
-  box-shadow: -1px 1px 5px -1px rgba(0, 0, 0, 0.5);
+  padding: 0.75rem !important;
+  z-index: 50;
+  -webkit-box-shadow: -5px 0px 5px -1px rgba(0, 0, 0, 0.3);
+  box-shadow: -5px 0px 5px -1px rgba(0, 0, 0, 0.3);
 }
-#viewer-navbar {
+.hero-head {
   z-index: 100;
-  -webkit-box-shadow: 0px 1px 5px -1px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px 1px 5px -1px rgba(0, 0, 0, 0.5);
+  height: 53px !important;
 }
-#viewport {
-  height: 100% !important;
+#navbar-viewer {
+  z-index: 100;
+  height: 53px !important;
+  -webkit-box-shadow: 0px 2px 5px -1px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 5px -1px rgba(0, 0, 0, 0.3);
 }
 </style>
