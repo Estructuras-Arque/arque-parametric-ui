@@ -302,7 +302,7 @@ export default {
   methods: {
     changeTopology() {
       this.$emit("topology-ready", this.currentTopology);
-      console.log("on topology clicked: ", this.currentTopology.ticket);
+      // console.log("on topology clicked: ", this.currentTopology.ticket);
     },
     getTopologiesMessage() {
       var count = "(" + this.topologies.length.toString() + ")";

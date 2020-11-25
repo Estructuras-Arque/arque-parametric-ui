@@ -1,5 +1,5 @@
 <template>
-  <div class="shapediver-viewport">
+  <div class="viewport-container">
     <b-dropdown
       class="pb-1 is-absolute is-higher"
       :scrollable="isScrollable"
@@ -21,6 +21,7 @@
         <b-icon icon="angle-down"></b-icon>
       </button>
       <b-dropdown-item
+        @click="changeTopology"
         v-for="(topo, index) in topologies"
         :key="index"
         :value="topo"
@@ -38,24 +39,15 @@
     <div
       v-for="topology in topologies"
       :key="topology.index"
+      class="sdv-container"
+      :id="'sdv-container' + '-' + topology.name.toLowerCase()"
       :class="
         topology.name == currentTopology.name
-          ? 'topologies-viewer'
-          : 'is-no-display'
+          ? 'has-background-warning'
+          : 'is-hidden'
       "
     >
-      <div
-        :id="topology.name.toLowerCase()"
-        v-if="topology.name == currentTopology.name"
-        class="viewer-container has-text-centered"
-        :class="
-          topology.index % 2 === 0
-            ? 'has-background-danger'
-            : 'has-background-warning'
-        "
-      >
-        <p class="subtitle is-3 center-align">{{ topology.name }}</p>
-      </div>
+      {{ currentTopology.name }}
     </div>
   </div>
 </template>
@@ -67,6 +59,7 @@ export default {
     return {
       maxHeight: 100,
       isScrollable: true,
+      loadedTopologies: [],
       currentTopology: {
         name: "Rectangular",
         index: 0,
@@ -114,19 +107,30 @@ export default {
     }
   },
   methods: {
+    changeTopology() {
+      this.shapediverInit();
+    },
     shapediverInit() {
-      this.topologies.forEach(topology => {
-        let _container = document.getElementById("sdv-container");
+      var tipoName = this.currentTopology.name.toLowerCase();
+      if (!this.loadedTopologies.includes(this.currentTopology.name)) {
+        console.log("does not include");
+        this.loadedTopologies.push(this.currentTopology.name);
+        // console.log(tipoName);
+        let _container = document.getElementById(
+          "sdv-container" + "-" + tipoName
+        );
         let settings = {
           container: _container,
           api: { version: 2, runtimeId: "My_runtime_id" },
-          ticket: topology.ticket,
+          ticket: this.currentTopology.ticket,
           modelViewUrl: "eu-central-1"
         };
-        console.log(settings);
-        //   var shapediver = new window.SDVApp.ParametricViewer(settings);
-        //   console.log(shapediver.getRuntimeId()); // shows 'My_runtime_id'
-      });
+        // console.log(settings);
+        var shapediver = new window.SDVApp.ParametricViewer(settings);
+        console.log(shapediver.getRuntimeId()); // shows 'My_runtime_id'
+      } else {
+        console.log("includes");
+      }
     }
   }
 };
@@ -135,30 +139,23 @@ export default {
 .is-absolute {
   position: absolute;
 }
-.is-is-no-display {
-  display: none !important;
-}
+
 .is-higher {
   z-index: 1000;
 }
-.viewer-container {
-  width: 100%;
-  height: 100%;
-  display: table;
-}
-.topologies-viewer {
-  width: 100% !important;
+
+.sdv-container {
+  width: 100vw !important;
   height: 100% !important;
 }
-.shapediver-viewport {
+.viewport-container {
   width: 100vw !important;
   height: 100vh !important;
+  display: flex;
+  // flex-direction: row;
+  flex-wrap: wrap;
+
   overflow: hidden;
   background-color: green;
-}
-
-.center-align {
-  display: table-cell;
-  vertical-align: middle;
 }
 </style>
