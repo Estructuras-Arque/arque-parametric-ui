@@ -43,7 +43,12 @@
                       label-position="on-border"
                     >
                       <b-dropdown
-                        class="pb-1"
+                        :disabled="!viewerLoaded"
+                        focus
+                        :mobile-modal="
+                          windowSize.isDesktop == false ? true : false
+                        "
+                        class="pb-1 is-zindex"
                         :scrollable="isScrollable"
                         :max-height="maxHeight"
                         v-model="currentTopology"
@@ -65,6 +70,7 @@
                         <b-dropdown-item
                           @click="changeTopology"
                           v-for="(topo, index) in topologies"
+                          :id="topo.id"
                           :key="index"
                           :value="topo"
                           aria-role="listitem"
@@ -90,51 +96,6 @@
                     </b-field>
                   </div>
                   <div class="container" v-else>
-                    <button class="button is-info is-outlined is-small">
-                      <b-icon icon="sync-alt"></b-icon>
-                    </button>
-                    <b-field
-                      class="has-text-grey"
-                      message="Feel free to select one of the following topolgies"
-                      label="Topology"
-                      label-position="on-border"
-                    >
-                      <b-dropdown
-                        class="pb-1"
-                        :scrollable="isScrollable"
-                        :max-height="maxHeight"
-                        v-model="currentTopology"
-                        aria-role="list"
-                      >
-                        <button
-                          class="button is-small is-info is-outlined"
-                          type="button"
-                          slot="trigger"
-                        >
-                          <template>
-                            <b-icon :icon="currentTopology.icon"></b-icon>
-                            <span>{{ currentTopology.name }}</span>
-                          </template>
-                          <b-icon icon="angle-down"></b-icon>
-                        </button>
-                        <b-dropdown-item
-                          v-for="(topo, index) in topologies"
-                          :key="index"
-                          :value="topo"
-                          aria-role="listitem"
-                        >
-                          <div class="media">
-                            <b-icon
-                              class="media-left"
-                              :icon="topo.icon"
-                            ></b-icon>
-                            <div class="media-content">
-                              <h3>{{ topo.name }}</h3>
-                            </div>
-                          </div>
-                        </b-dropdown-item>
-                      </b-dropdown>
-                    </b-field>
                     <div v-for="i in 2" :key="i">
                       <b-field
                         label="Compact, rounded and right aligned controls"
@@ -241,9 +202,10 @@ export default {
   components: {
     simplebar
   },
-  props: ["windowSize", "topologies"],
+  props: ["windowSize", "topologies", "viewerLoaded"],
   data() {
     return {
+      notMobile: false,
       paramsTabs: [
         {
           name: "Frame",
@@ -272,10 +234,11 @@ export default {
       isScrollable: true,
       maxHeight: 200,
       currentTopology: {
-        name: "Rectangular",
-        ticket:
-          "22572ea61710ec728bfa3501c0f677911f379317103074c57998495eaca3c1a7034d12c9e47255fa97cfbdf469f79b7e4558f797d4f90a3602e082e271d2155a55a912e0999c769d7b1d864858934ab12b0490504c6a95242cebbacea3d27c765816d53e4982f307d208e92e5f95f766c572b2129ca7-cf75af7365fcd996aef3db010da65c5f",
-        icon: "globe"
+        name: "None Selected",
+        loaded: false,
+        id: null,
+        ticket: null,
+        icon: null
       },
       topologyMessage: null,
       parametersTab: 1,
@@ -302,7 +265,6 @@ export default {
   methods: {
     changeTopology() {
       this.$emit("topology-ready", this.currentTopology);
-      // console.log("on topology clicked: ", this.currentTopology.ticket);
     },
     getTopologiesMessage() {
       var count = "(" + this.topologies.length.toString() + ")";
@@ -318,7 +280,8 @@ export default {
   height: 100%;
 }
 .has-max-height {
-  max-height: 300px;
+  max-height: 500px;
+  min-height: 300px;
 }
 .container .has-min-height {
   min-height: 100px;
