@@ -56,7 +56,7 @@
       <div id="viewer" class="columns is-desktop is-gapless">
         <!-- control panel -->
         <control-panel
-          :viewer-loaded="viewerLoaded"
+          :shapediver-ready="shapediverReady"
           @topology-ready="onTopologyReady"
           :topologies="topologies"
           :window-size="windowSize"
@@ -65,7 +65,7 @@
         <!-- shapediver-viewer -->
 
         <shapediver-viewer
-          @viewer-ready="onViewerReady"
+          @shapediver-ready="onShapediverReady"
           :window-size="windowSize"
           :current-topology="currentTopology"
           :topologies="topologies"
@@ -101,7 +101,7 @@ export default {
   },
   data() {
     return {
-      viewerLoaded: null,
+      shapediverReady: null,
       isLoading: true,
       showRight: true,
       showLeft: true,
@@ -160,8 +160,8 @@ export default {
     }, 1000);
   },
   methods: {
-    onViewerReady(value) {
-      this.viewerLoaded = value;
+    onShapediverReady(value) {
+      this.shapediverReady = value;
     },
     onTopologyReady(value) {
       value.loaded = true;

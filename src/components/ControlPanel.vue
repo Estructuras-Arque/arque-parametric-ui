@@ -43,7 +43,7 @@
                       label-position="on-border"
                     >
                       <b-dropdown
-                        :disabled="!viewerLoaded"
+                        :disabled="!shapediverReady"
                         focus
                         :mobile-modal="
                           windowSize.isDesktop == false ? true : false
@@ -89,7 +89,10 @@
                         </b-dropdown-item>
                       </b-dropdown>
                       <p class="control">
-                        <button class="button is-info is-outlined is-small">
+                        <button
+                          @click="clearStorage"
+                          class="button is-info is-outlined is-small"
+                        >
                           <b-icon icon="sync-alt"></b-icon>
                         </button>
                       </p>
@@ -202,7 +205,7 @@ export default {
   components: {
     simplebar
   },
-  props: ["windowSize", "topologies", "viewerLoaded"],
+  props: ["windowSize", "topologies", "shapediverReady"],
   data() {
     return {
       notMobile: false,
@@ -263,6 +266,10 @@ export default {
     this.getTopologiesMessage();
   },
   methods: {
+    clearStorage() {
+      localStorage.clear();
+      location.reload();
+    },
     changeTopology() {
       this.$emit("topology-ready", this.currentTopology);
     },

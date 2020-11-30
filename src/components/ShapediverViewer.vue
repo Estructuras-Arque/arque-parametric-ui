@@ -12,6 +12,18 @@
       id="sdv-container"
       style="width:100%;height:500px;"
     ></div>
+    <!-- <div v-for="topology in topologies" :key="topology.index">
+      <input
+        @click="togglePlugin"
+        :id="topology.id"
+        type="checkbox"
+        :disabled="!shapediverReady"
+      />
+      <label :class="shapediverReady ? 'has-text-info' : 'has-text-dark'">{{
+        topology.id
+      }}</label
+      ><br />
+    </div> -->
   </div>
 </template>
 
@@ -21,11 +33,12 @@ export default {
   props: ["windowSize", "topologies", "currentTopology"],
   data() {
     return {
-      viewerLoaded: false,
+      shapediverReady: false,
       maxHeight: 100,
       isScrollable: true,
       geometryLoaded: {},
-      paths: null
+      paths: [],
+      assets: []
     };
   },
   watch: {
@@ -53,49 +66,79 @@ export default {
       };
       // See http://app.shapediver.com/api/SDVApp.ParametricViewer.html for all settings available via the constructor.
       var shapediver = new window.SDVApp.ParametricViewer(settings);
+
       this.shapediver = shapediver;
 
       // register separate communication plugins for each model ticket.
       // initialize a session for the model, don't load geometry yet
 
-      var model = await shapediver.plugins.registerCommPluginAsync({});
-
       this.topologies.forEach(topology => {
-        model.deferGeometryLoading = true;
-        model.ticket = topology.ticket;
-        model.modelViewUrl = "eu-central-1";
-        model.runtimeId = "CommPlugin_" + topology.index;
-        this.geometryLoaded["CommPlugin_" + topology.index] = false;
+        this.initModel(topology.ticket, topology.id);
       });
-
       await this.enableCheckbox();
     },
-    togglePlugin(cb) {
-      this.showPluginContents(cb.id, cb.loaded);
+
+    async initModel(modelTicket, modelId) {
+      await this.shapediver.plugins.registerCommPluginAsync({
+        deferGeometryLoading: true,
+        ticket: modelTicket,
+        modelViewUrl: "eu-central-1",
+        runtimeId: modelId
+      });
+      this.geometryLoaded[modelId] = false;
+      this.visibilityOn();
     },
+
+    togglePlugin(cb) {
+      console.log(cb);
+      if (cb.target != null) {
+        this.showPluginContents(cb.target.id, cb.target.checked);
+      } else {
+        this.showPluginContents(cb.id, cb.loaded);
+      }
+    },
+
     showPluginContents(pluginId, bShow) {
       console.log("show plugin content", pluginId, bShow);
       // load the geometry the first time a specific model needs to be displayed
       if (!this.geometryLoaded[pluginId]) {
         this.shapediver.plugins.refreshPluginAsync(pluginId);
-        console.log(this.shapediver.plugins.refreshPluginAsync(pluginId));
+        // console.log(this.shapediver.plugins.refreshPluginAsync(pluginId));
         this.geometryLoaded[pluginId] = true;
-        console.log("geometry loaded", this.geometryLoaded[pluginId]);
+        // console.log("geometry loaded", this.geometryLoaded[pluginId]);
       }
-      let assets = this.shapediver.scene.get(null, pluginId).data;
-      let paths = [];
-      for (let i = 0; i < assets.length; i++) {
-        paths.push(assets[i].scenePath);
+      this.assets = this.shapediver.scene.get(null, pluginId).data;
+      this.paths = [];
+      for (let i = 0; i < this.assets.length; i++) {
+        this.paths.push(this.assets[i].scenePath);
       }
       if (bShow) {
-        this.paths = paths;
-        this.shapediver.scene.toggleGeometry(paths, []);
+        this.shapediver.scene.toggleGeometry(this.paths, []);
       } else {
-        this.shapediver.scene.toggleGeometry([], paths);
+        this.shapediver.scene.toggleGeometry([], this.paths);
       }
     },
+
     enableCheckbox() {
-      this.$emit("viewer-ready", (this.viewerLoaded = true));
+      this.shapediverReady = true;
+      this.$emit("shapediver-ready", this.shapediverReady);
+    },
+    visibilityOn() {
+      this.shapediver.scene.addEventListener(
+        this.shapediver.scene.EVENTTYPE.VISIBILITY_ON,
+        () => {
+          console.log("on visibility on");
+        }
+      );
+    },
+
+    visibilityOff() {
+      this.shapediver.scene.removeEventListener(
+        this.shapediver.scene.EVENTTYPE.VISIBILITY_OFF,
+        () => {
+          console.log("on visibility off");
+        }
+      );
     }
   }
 };
