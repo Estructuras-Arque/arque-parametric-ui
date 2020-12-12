@@ -240,6 +240,10 @@ export default {
         name: "None Selected",
         loaded: false,
         id: null,
+        assets: [],
+        paths: [],
+        params: [],
+        settings: [],
         ticket: null,
         icon: null
       },

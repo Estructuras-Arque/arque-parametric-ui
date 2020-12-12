@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 <template>
   <div
     class="column has-background-white viewport-container"
@@ -7,23 +8,7 @@
         : 'mobile-sd-viewer'
     "
   >
-    <div
-      class="has-background-light"
-      id="sdv-container"
-      style="width:100%;height:500px;"
-    ></div>
-    <!-- <div v-for="topology in topologies" :key="topology.index">
-      <input
-        @click="togglePlugin"
-        :id="topology.id"
-        type="checkbox"
-        :disabled="!shapediverReady"
-      />
-      <label :class="shapediverReady ? 'has-text-info' : 'has-text-dark'">{{
-        topology.id
-      }}</label
-      ><br />
-    </div> -->
+    <div class="has-background-light" id="sdv-container"></div>
   </div>
 </template>
 
@@ -34,9 +19,10 @@ export default {
   data() {
     return {
       shapediverReady: false,
+      shapediver: null,
       maxHeight: 100,
       isScrollable: true,
-      geometryLoaded: {},
+      loadedGeometries: {},
       paths: [],
       assets: []
     };
@@ -44,8 +30,16 @@ export default {
   watch: {
     // whenever currentTopology changes, this function will run
     currentTopology: function(newTopo, oldTopo) {
+      if (oldTopo.id != null) {
+        console.log("Exists", oldTopo);
+      } else {
+        console.log("does not exist", oldTopo);
+      }
       if (newTopo != oldTopo) {
-        this.togglePlugin(newTopo);
+        oldTopo.loaded = false;
+        this.loadedGeometries[oldTopo.id] = false;
+        this.showPluginContents(oldTopo.id, oldTopo.loaded);
+        this.showPluginContents(newTopo.id, newTopo.loaded);
       }
     }
   },
@@ -54,6 +48,7 @@ export default {
       document.addEventListener("DOMContentLoaded", this.initApp, false);
     } else {
       this.initApp();
+      console.log("shapediver loaded successfully");
     }
   },
   methods: {
@@ -71,10 +66,9 @@ export default {
 
       // register separate communication plugins for each model ticket.
       // initialize a session for the model, don't load geometry yet
-
-      this.topologies.forEach(topology => {
-        this.initModel(topology.ticket, topology.id);
-      });
+      for (let i = 0; i < this.topologies.length; i++) {
+        this.initModel(this.topologies[i].ticket, this.topologies[i].id);
+      }
       await this.enableCheckbox();
     },
 
@@ -85,70 +79,43 @@ export default {
         modelViewUrl: "eu-central-1",
         runtimeId: modelId
       });
-      this.geometryLoaded[modelId] = false;
-      this.visibilityOn();
+      this.loadedGeometries[modelId] = false;
     },
 
-    togglePlugin(cb) {
-      console.log(cb);
-      if (cb.target != null) {
-        this.showPluginContents(cb.target.id, cb.target.checked);
-      } else {
-        this.showPluginContents(cb.id, cb.loaded);
-      }
-    },
-
-    showPluginContents(pluginId, bShow) {
-      console.log("show plugin content", pluginId, bShow);
+    async showPluginContents(pluginId, bShow) {
       // load the geometry the first time a specific model needs to be displayed
-      if (!this.geometryLoaded[pluginId]) {
-        this.shapediver.plugins.refreshPluginAsync(pluginId);
+      if (!this.loadedGeometries[this.currentTopology.id]) {
+        this.shapediver.plugins.refreshPluginAsync(this.currentTopology.id);
         // console.log(this.shapediver.plugins.refreshPluginAsync(pluginId));
-        this.geometryLoaded[pluginId] = true;
-        // console.log("geometry loaded", this.geometryLoaded[pluginId]);
+        this.loadedGeometries[this.currentTopology.id] = true;
+        // console.log("geometry loaded", this.loadedGeometries[pluginId]);
       }
-      this.assets = this.shapediver.scene.get(null, pluginId).data;
-      this.paths = [];
-      for (let i = 0; i < this.assets.length; i++) {
-        this.paths.push(this.assets[i].scenePath);
+      var assets = this.shapediver.scene.get(null, pluginId).data;
+      var paths = [];
+      for (let i = 0; i < assets.length; i++) {
+        paths.push(assets[i].scenePath);
       }
+      // console.log("paths", paths, "assets", assets);
       if (bShow) {
-        this.shapediver.scene.toggleGeometry(this.paths, []);
+        this.shapediver.scene.toggleGeometry(paths, []);
       } else {
-        this.shapediver.scene.toggleGeometry([], this.paths);
+        this.shapediver.scene.toggleGeometry([], paths);
       }
     },
 
     enableCheckbox() {
       this.shapediverReady = true;
       this.$emit("shapediver-ready", this.shapediverReady);
-    },
-    visibilityOn() {
-      this.shapediver.scene.addEventListener(
-        this.shapediver.scene.EVENTTYPE.VISIBILITY_ON,
-        () => {
-          console.log("on visibility on");
-        }
-      );
-    },
-
-    visibilityOff() {
-      this.shapediver.scene.removeEventListener(
-        this.shapediver.scene.EVENTTYPE.VISIBILITY_OFF,
-        () => {
-          console.log("on visibility off");
-        }
-      );
     }
   }
 };
 </script>
 
 <style lang="scss">
-// .sdv-container {
-//   width: 100% !important;
-//   height: 100% !important;
-// }
+#sdv-container {
+  width: 100% !important;
+  height: 100% !important;
+}
 // .viewport-container {
 //   // display: flex;
 //   // flex-direction: row;

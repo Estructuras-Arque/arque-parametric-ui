@@ -108,6 +108,7 @@ export default {
         }
       );
     },
+
     async initModel(modelTicket, modelId) {
       await this.shapediver.plugins.registerCommPluginAsync({
         deferGeometryLoading: true,
@@ -117,6 +118,12 @@ export default {
       });
       this.geometryLoaded[modelId] = false;
     },
+
+    togglePlugin(cb) {
+      console.log(cb.target.id, cb.target.checked);
+      this.showPluginContents(cb.target.id, cb.target.checked);
+    },
+
     showPluginContents(pluginId, bShow) {
       // load the geometry the first time a specific model needs to be displayed
       if (!this.geometryLoaded[pluginId]) {
@@ -128,15 +135,14 @@ export default {
       for (let i = 0; i < assets.length; i++) {
         paths.push(assets[i].scenePath);
       }
-      if (bShow) this.shapediver.scene.toggleGeometry(paths, []);
-      else {
+      if (bShow) {
+        console.log(paths, assets);
+        this.shapediver.scene.toggleGeometry(paths, []);
+      } else {
         this.shapediver.scene.toggleGeometry([], paths);
       }
     },
-    togglePlugin(cb) {
-      console.log(cb.target.id, cb.target.checked);
-      this.showPluginContents(cb.target.id, cb.target.checked);
-    },
+
     enableCheckboxes() {
       this.shapediverReady = true;
     }
@@ -146,6 +152,7 @@ export default {
 <style lang="scss" scoped>
 #sdv-container {
   z-index: 1000 !important;
+  height: 80% !important;
 }
 .viewport-container {
   width: 100vw !important;
