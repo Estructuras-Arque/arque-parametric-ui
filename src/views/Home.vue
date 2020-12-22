@@ -2,7 +2,7 @@
   <div class="home">
     <section class="hero is-fullheight is-bold is-light">
       <!-- Hero head: will stick at the top -->
-      <div class="hero-head">
+      <!-- <div class="hero-head">
         <b-navbar>
           <template slot="brand">
             <b-navbar-item href="http://estructurasarque.com">
@@ -42,22 +42,22 @@
             </b-navbar-item>
           </template>
         </b-navbar>
-      </div>
+      </div> -->
 
       <!-- Hero content: will be in the middle -->
-      <div class="hero-body">
+      <div v-if="!showGif" class="hero-body">
         <div class="container has-text-centered">
           <figure class="image is-square" id="arque-logo">
-            <transition name="slide-left">
+            <transition :name="showLogo ? 'slide-left' : 'fadeOut'">
               <icon-orange v-if="showLogo" />
             </transition>
             <transition name="slide-right">
               <icon-black v-if="showLogo" />
             </transition>
           </figure>
-          <transition name="swing">
+          <transition :name="showTitle ? 'swing' : 'fade-out-down'">
             <h2
-              class="title is-size-3-mobile"
+              class="title is-size-3-mobile has-text-grey has-text-semibold"
               v-if="showTitle"
               style="padding-bottom:1rem;"
             >
@@ -65,13 +65,16 @@
             </h2>
           </transition>
 
-          <transition name="swing">
-            <h1 class="subtitle" v-if="showTitle">
-              P A R A M E T R I C . U I
+          <transition :name="showTitle ? 'swing' : 'fade-out-down'">
+            <h1
+              class="subtitle is-3 has-text-warning has-text-semibold"
+              v-if="showTitle"
+            >
+              WISHES YOU HAPPY HOLIDAYS & <br />
+              A MERRY XMAS
             </h1>
           </transition>
-
-          <transition name="swing">
+          <!-- <transition name="swing">
             <b-tooltip
               type="is-white"
               label="Go to app"
@@ -84,12 +87,12 @@
                 >Start</b-button
               ></b-tooltip
             ></transition
-          >
+          > -->
         </div>
       </div>
 
       <!-- Hero footer: will stick at the bottom -->
-      <div class="hero-foot">
+      <!-- <div class="hero-foot">
         <footer class="footer has-background-dark py-5">
           <div class="content has-text-centered">
             <div class="columns is-mobile">
@@ -99,7 +102,14 @@
             </div>
           </div>
         </footer>
-      </div>
+      </div> -->
+      <transition v-else name="slide-left">
+        <img
+          class="image has-fullheight"
+          src="../assets/Xmas.gif"
+          alt="description of gif"
+        />
+      </transition>
     </section>
   </div>
 </template>
@@ -118,7 +128,8 @@ export default {
       showLogo: false,
       showTitle: false,
       showBackB: false,
-      startButton: false
+      startButton: false,
+      showGif: false
     };
   },
   components: {
@@ -129,6 +140,12 @@ export default {
     this.LoadLogo();
     this.LoadTitle();
     this.LoadBackB();
+    setTimeout(() => {
+      // alert("giff to lunch");
+      this.showLogo = false;
+      this.showTitle = false;
+      this.showGif = true;
+    }, 3000);
   },
   methods: {
     LoadLogo() {
@@ -157,6 +174,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.has-gradiant {
+  // background: rgb(2, 0, 36);
+  // background: linear-gradient(
+  //   180deg,
+  //   rgba(2, 0, 36, 1) 0%,
+  //   rgba(255, 255, 255, 1) 0%,
+  //   rgba(0, 0, 0, 1) 100%
+  // );
+}
 .slide-left-enter-active {
   animation: zoomIn 0.6s;
 }
@@ -173,24 +199,27 @@ export default {
   animation: fadeInUp 0.6s;
 }
 #arque-logo {
-  height: 150px;
-  width: 150px;
+  height: 350px;
+  width: 350px;
   padding-top: 0;
   position: relative;
   /*top: 100%; */
   left: 50%;
-  transform: translateX(-75px);
+  transform: translateX(-175px);
 }
 #arque-logo svg {
   position: relative;
 }
 #arque-logo .black-element {
   position: absolute;
-  left: -webkit-calc(50% -75px);
-  left: -moz-calc(50% - 75px);
-  left: calc(50% - 75px);
+  left: -webkit-calc(50% -175px);
+  left: -moz-calc(50% - 175px);
+  left: calc(50% - 175px);
 }
 .hero-foot {
   max-height: 100px !important;
+}
+.has-fullheight {
+  height: 100vh;
 }
 </style>
