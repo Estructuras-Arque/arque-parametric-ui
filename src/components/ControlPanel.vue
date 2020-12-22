@@ -43,7 +43,7 @@
                       label-position="on-border"
                     >
                       <b-dropdown
-                        :disabled="!shapediverReady"
+                        :disabled="!shapediver"
                         focus
                         :mobile-modal="
                           windowSize.isDesktop == false ? true : false
@@ -205,7 +205,7 @@ export default {
   components: {
     simplebar
   },
-  props: ["windowSize", "topologies", "shapediverReady"],
+  props: ["windowSize", "topologies", "shapediver"],
   data() {
     return {
       notMobile: false,
@@ -243,7 +243,6 @@ export default {
         assets: [],
         paths: [],
         params: [],
-        settings: [],
         ticket: null,
         icon: null
       },
@@ -266,8 +265,10 @@ export default {
       ]
     };
   },
-  mounted() {
+  beforeMount() {
     this.getTopologiesMessage();
+    this.currentTopology = this.topologies[0];
+    this.changeTopology();
   },
   methods: {
     clearStorage() {
