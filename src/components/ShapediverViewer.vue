@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-unused-vars */ /* eslint-disable no-unused-vars */
 <template>
   <div
     class="column has-background-white viewport-container"
@@ -13,7 +13,7 @@
         :is-full-page="true"
         :active="geometryLoading"
         :can-cancel="false"
-        class="viewer-loading"
+        class="geometry-loading"
       >
       </b-loading>
     </div>
@@ -23,26 +23,20 @@
 <script>
 export default {
   name: "ShapediverViewer",
-  props: ["windowSize", "topologies", "currentTopology"],
+  props: ["windowSize", "topologies", "currentTopology", "paramsTabs"],
   data() {
     return {
-      shapediverReady: false,
       geometryLoading: true,
       shapediver: null,
       maxHeight: 100,
       isScrollable: true,
-      loadedGeometries: {},
-      paths: [],
-      assets: []
+      allParams: []
     };
   },
   watch: {
     // whenever currentTopology changes, this function will run
     currentTopology: function(newTopo, oldTopo) {
       if (newTopo != oldTopo && oldTopo.id != null) {
-        console.log("different topos");
-        // this.loadedGeometries[oldTopo.id] = false;
-        // this.loadedGeometries[newTopo.id] = true;
         this.showPluginContents(oldTopo.id, false);
         this.showPluginContents(newTopo.id, true);
       }
@@ -53,8 +47,6 @@ export default {
       document.addEventListener("DOMContentLoaded", this.initApp, false);
     } else {
       this.initApp();
-
-      // console.log("shapediver loaded successfully");
     }
   },
   methods: {
@@ -73,11 +65,13 @@ export default {
 
       // register separate communication plugins for each model ticket.
       // initialize a session for the model, don't load geometry yet
+      this.allParams = [];
       for (let i = 0; i < this.topologies.length; i++) {
         await this.initModel(this.topologies[i].ticket, this.topologies[i].id);
       }
-      // await this.enableCheckbox();
-      this.showPluginContents(
+      this.allParams = this.shapediver.parameters.get().data;
+      await this.getPluginsParams();
+      await this.showPluginContents(
         this.currentTopology.id,
         this.currentTopology.loaded
       );
@@ -90,15 +84,20 @@ export default {
         modelViewUrl: "eu-central-1",
         runtimeId: modelId
       });
-      // if (modelId == this.currentTopology.id) {
-      //   this.loadedGeometries[modelId] = true;
-      // } else this.loadedGeometries[modelId] = false;
+    },
+
+    async getPluginsParams() {
+      this.topologies.forEach(topology => {
+        topology.params = this.allParams.filter(
+          param => param.plugin == topology.id
+        );
+      });
     },
 
     // eslint-disable-next-line no-unused-vars
     async showPluginContents(pluginId, bShow) {
       // load the geometry the first time a specific model needs to be displayed
-      this.shapediver.plugins.refreshPluginAsync(pluginId);
+      await this.shapediver.plugins.refreshPluginAsync(pluginId);
       // console.log(this.shapediver.plugins.refreshPluginAsync(pluginId));
       // this.loadedGeometries[pluginId] = true;
       var assets = this.shapediver.scene.get(null, pluginId).data;
@@ -108,19 +107,43 @@ export default {
       }
       this.currentTopology.paths = paths;
       this.currentTopology.assets = assets;
-      // console.log("paths", paths, "assets", assets);
+
       if (bShow) {
         this.shapediver.scene.toggleGeometry(paths, []);
         this.geometryLoading = false;
+        console.log("on load", this.currentTopology.params);
+
+        for (let i = 0; i < this.paramsTabs.length; i++) {
+          var paramTab = this.paramsTabs[i];
+          this.filterParamTabs(paramTab.name);
+        }
       } else {
         this.shapediver.scene.toggleGeometry([], paths);
       }
-    }
+    },
+    filterParamTabs(name) {
+      var currentParams = this.currentTopology.params;
 
-    // enableCheckbox() {
-    //   this.shapediverReady = true;
-    //   this.$emit("shapediver-ready", this.shapediverReady);
-    // }
+      var tab = this.paramsTabs.filter(element => element.name == name)[0];
+
+      var frameParamNames = tab.names;
+
+      console.log(frameParamNames, tab);
+
+      var tabParams = currentParams.filter(function(param) {
+        return frameParamNames.includes(param.name.trim());
+      });
+
+      console.log(tabParams);
+
+      currentParams = currentParams.filter(function(param) {
+        return !frameParamNames.includes(param.name.trim())
+          ? true
+          : currentParams.splice(currentParams.indexOf(param), 1) && false;
+      });
+      tab.params = tabParams;
+      console.log("after load", currentParams);
+    }
   }
 };
 </script>
@@ -142,7 +165,7 @@ export default {
 //   width: 100%;
 //   height: 100%;
 // }
-.viewer-loading {
+.geometry-loading {
   position: relative;
   width: 100%;
   height: 100%;

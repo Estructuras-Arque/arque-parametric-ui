@@ -27,7 +27,7 @@
               >
                 <template #header>
                   <b-icon :icon="paramTab.icon"></b-icon>
-                  <!-- <span> {{ paramTab.name }} </span> -->
+                  <span> {{ paramTab.name }} </span>
                 </template>
                 <simplebar
                   data-simplebar-auto-hide="false"
@@ -97,20 +97,63 @@
                         </button>
                       </p>
                     </b-field>
+                    <br />
+                    <b-field
+                      v-for="(param, index) in paramTab.params"
+                      :key="index"
+                      class="param-controllers"
+                      :label="param.name"
+                    >
+                      <b-slider
+                        @input="onParamChanged(param)"
+                        v-if="param.type == 'Float'"
+                        :min="param.min"
+                        :max="param.max"
+                        v-model="param.value"
+                      ></b-slider>
+                      <b-slider
+                        @input="onParamChanged(param)"
+                        v-if="param.type == 'Int'"
+                        :min="param.min"
+                        :max="param.max"
+                        v-model="param.value"
+                      ></b-slider>
+                      <b-switch
+                        @input="onParamChanged(param)"
+                        v-if="param.type == 'Bool'"
+                        v-model="param.value"
+                        >{{ param.value }}</b-switch
+                      >
+                    </b-field>
                   </div>
                   <div class="container" v-else>
-                    <div v-for="i in 2" :key="i">
-                      <b-field
-                        label="Compact, rounded and right aligned controls"
+                    <b-field
+                      v-for="(param, index) in paramTab.params"
+                      :key="index"
+                      class="param-controllers"
+                      :label="param.name"
+                    >
+                      <b-slider
+                        @input="onParamChanged(param)"
+                        v-if="param.type == 'Float'"
+                        :min="param.min"
+                        :max="param.max"
+                        v-model="param.value"
+                      ></b-slider>
+                      <b-slider
+                        @input="onParamChanged(param)"
+                        v-if="param.type == 'Int'"
+                        :min="param.min"
+                        :max="param.max"
+                        v-model="param.value"
+                      ></b-slider>
+                      <b-switch
+                        @input="onParamChanged(param)"
+                        v-if="param.type == 'Bool'"
+                        v-model="param.value"
+                        >{{ param.value }}</b-switch
                       >
-                        <b-numberinput
-                          size="is-small"
-                          controls-alignment="right"
-                          controls-position="compact"
-                          controls-rounded
-                        ></b-numberinput>
-                      </b-field>
-                    </div>
+                    </b-field>
                   </div>
                 </simplebar>
               </b-tab-item>
@@ -134,6 +177,7 @@
           </div>
         </div>
       </b-tab-item>
+
       <b-tab-item
         v-if="!windowSize.isDesktop"
         label="Downloads"
@@ -153,6 +197,19 @@
       </b-tab-item>
 
       <!-- TODO -->
+      <b-tab-item disabled label="Viewer" icon="eye">
+        <div class="section is-paddingless">
+          <div class="container is-fluid is-paddingless">
+            <div class="notification is-danger">
+              What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
+              printing and typesetting industry Lorem Ipsum has been the
+              industry's standard dummy text ever since the 1500s when an
+              unknown printer took a galley of type and scrambled it to make a
+              type specimen book it has?
+            </div>
+          </div>
+        </div>
+      </b-tab-item>
       <b-tab-item disabled label="Materials" icon="cube">
         <div class="section is-paddingless">
           <div class="container is-fluid is-paddingless">
@@ -205,35 +262,11 @@ export default {
   components: {
     simplebar
   },
-  props: ["windowSize", "topologies", "shapediver"],
+  props: ["windowSize", "topologies", "shapediver", "paramsTabs"],
   data() {
     return {
       notMobile: false,
-      paramsTabs: [
-        {
-          name: "Frame",
-          icon: "draw-polygon",
-          params: []
-        },
-        {
-          name: "Dimensions",
-          icon: "ruler",
-          params:
-            "What light is light, if Silvia be not seen? What joy is joy, if Silvia be not by - Unless it be to think that she is by And feed upon the shadow of perfection? Except I be by Silvia in the night, There is no music in the nightingale."
-        },
-        {
-          name: "Subdivisions",
-          icon: "border-all",
-          params:
-            "What light is light, if Silvia be not seen? What joy is joy, if Silvia be not by - Unless it be to think that she is by And feed upon the shadow of perfection? Except I be by Silvia in the night, There is no music in the nightingale."
-        },
-        {
-          name: "Columns",
-          icon: "grip-lines-vertical",
-          params:
-            "What light is light, if Silvia be not seen? What joy is joy, if Silvia be not by - Unless it be to think that she is by And feed upon the shadow of perfection? Except I be by Silvia in the night, There is no music in the nightingale."
-        }
-      ],
+      tHeight: false,
       isScrollable: true,
       maxHeight: 200,
       currentTopology: {
@@ -265,7 +298,7 @@ export default {
       ]
     };
   },
-  beforeMount() {
+  mounted() {
     this.getTopologiesMessage();
     this.currentTopology = this.topologies[0];
     this.changeTopology();
@@ -278,6 +311,10 @@ export default {
     changeTopology() {
       this.$emit("topology-ready", this.currentTopology);
     },
+    onParamChanged(param) {
+      this.$emit("param-changed", param);
+      console.log(param.value);
+    },
     getTopologiesMessage() {
       var count = "(" + this.topologies.length.toString() + ")";
       this.topologyMessage =
@@ -288,6 +325,10 @@ export default {
 </script>
 
 <style lang="scss">
+.param-controllers {
+  margin-right: 2rem;
+  margin-left: 2rem;
+}
 .is-fullheight {
   height: 100%;
 }

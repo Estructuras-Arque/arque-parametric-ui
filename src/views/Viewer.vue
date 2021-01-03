@@ -53,10 +53,14 @@
       </div>
 
       <!-- viewer -->
+
       <div id="viewer" class="columns is-desktop is-gapless">
         <!-- control panel -->
+
         <control-panel
+          :params-tabs="paramsTabs"
           :shapediver="shapediver"
+          @param-changed="onParamChanged"
           @topology-ready="onTopologyReady"
           :topologies="topologies"
           :window-size="windowSize"
@@ -65,12 +69,15 @@
         <!-- shapediver-viewer -->
 
         <shapediver-viewer
+          :params-tabs="paramsTabs"
           @shapediver-ready="onShapediverReady"
           :window-size="windowSize"
           :current-topology="currentTopology"
           :topologies="topologies"
         />
+
         <!-- model downloads -->
+
         <div
           v-if="windowSize.isDesktop"
           id="model-info"
@@ -101,6 +108,50 @@ export default {
   },
   data() {
     return {
+      paramsTabs: [
+        {
+          name: "Frame",
+          icon: "draw-polygon",
+          names: [
+            "Cantilever",
+            "Positive Height",
+            "Negative Height",
+            "Tubes Diameter (mm)",
+            "Tubes Thickness (mm)"
+          ],
+          params: []
+        },
+        {
+          name: "Customize",
+          icon: "ruler",
+          names: [
+            "Width (m)  (X)",
+            "Length (m)   (Y)",
+            "System Height (m)",
+            "Arch Height (m)",
+            "Pich Height (m)"
+          ],
+          params: []
+        },
+        {
+          name: "Subdivisions",
+          icon: "border-all",
+          names: ["N⍛ Divisions  (X)", "N⍛ Divisions  (Y)"],
+          params: []
+        },
+        {
+          name: "Columns",
+          icon: "grip-lines-vertical",
+          names: [
+            "N⍛ Columns (X)",
+            "N⍛ Columns (Y)",
+            "Intermediate Columns",
+            "Columns Diameter (mm)",
+            "Columns Thickness (mm)"
+          ],
+          params: []
+        }
+      ],
       shapediver: null,
       geometryReady: false,
       showRight: true,
@@ -165,14 +216,22 @@ export default {
           ticket:
             "d96bfde054293d49d4266a9313e62dc971525fd5a962800c35c8c9d7122483f1b21dd3267802e2b1446eaa40f9fe277d797acc75b03b826d4dbcea6e1fa33c94016f0f83a3271c6461e2d9820fdc755fb94f2b1f19381b51970d1b54295e45f9c81f7f75a4cc8b6e0e30ea57792eaa3670e0496cc067-e60364391a0c2eb405acb24c580b2199",
           icon: "cogs"
+        },
+        {
+          name: "Circular",
+          loaded: false,
+          id: "CommPlugin_4",
+          assets: [],
+          paths: [],
+          params: [],
+          index: 4,
+          ticket:
+            "d6f1065553dc495611ad53e43d30cfa23bb32af84bcc433e3ac31ec993ee98a18cef1fdc4e3b0b260a8c3fe445f7c768d8b4d17ff14a60c3d3be55b3dccdb273748d66a0c110e98c05af7c465a5b22c695542291f5cbbc4ce123645a016c3103740ec26ce205bea62c43b0ca753fca9b74efe63e8ad5-092b3c8c0d6431811184f2dcbe10fbd1",
+          icon: "cogs"
         }
-        // { name: "Conical", index: 5, ticket: 5, icon: "cogs" }
       ]
     };
   },
-  // created() {
-  //   this.onShapediverReady();
-  // },
   methods: {
     onShapediverReady(value) {
       this.shapediver = value;
@@ -183,6 +242,24 @@ export default {
     onTopologyReady(value) {
       value.loaded = true;
       this.currentTopology = value;
+    },
+    onParamsTabsReady(value) {
+      this.paramsTabs = value;
+    },
+    onParamChanged(param) {
+      this.shapediver.parameters.updateAsync({
+        name: param.name,
+        id: param.id,
+        value: param.value,
+        plugin: param.plugin
+      });
+      console.log(
+        "params on change",
+        param.name,
+        param.id,
+        param.id,
+        param.plugin
+      );
     }
   }
 };
