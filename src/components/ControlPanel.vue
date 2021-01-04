@@ -27,7 +27,7 @@
               >
                 <template #header>
                   <b-icon :icon="paramTab.icon"></b-icon>
-                  <span> {{ paramTab.name }} </span>
+                  <span v-if="windowSize.isDesktop"> {{ paramTab.name }} </span>
                 </template>
                 <simplebar
                   data-simplebar-auto-hide="false"
@@ -102,23 +102,20 @@
                       v-for="(param, index) in paramTab.params"
                       :key="index"
                       class="param-controllers"
-                      :label="param.name"
                     >
                       <b-slider
+                        type="is-info"
+                        size="is-small"
                         @input="onParamChanged(param)"
-                        v-if="param.type == 'Float'"
+                        v-if="param.type == 'Int' || param.type == 'Float'"
                         :min="param.min"
                         :max="param.max"
                         v-model="param.value"
-                      ></b-slider>
-                      <b-slider
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Int'"
-                        :min="param.min"
-                        :max="param.max"
-                        v-model="param.value"
+                        ticks
                       ></b-slider>
                       <b-switch
+                        type="is-info"
+                        size="is-small"
                         @input="onParamChanged(param)"
                         v-if="param.type == 'Bool'"
                         v-model="param.value"
@@ -134,20 +131,17 @@
                       :label="param.name"
                     >
                       <b-slider
+                        type="is-info"
+                        size="is-small"
                         @input="onParamChanged(param)"
-                        v-if="param.type == 'Float'"
-                        :min="param.min"
-                        :max="param.max"
-                        v-model="param.value"
-                      ></b-slider>
-                      <b-slider
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Int'"
+                        v-if="param.type == 'Int' || param.type == 'Float'"
                         :min="param.min"
                         :max="param.max"
                         v-model="param.value"
                       ></b-slider>
                       <b-switch
+                        type="is-info"
+                        size="is-small"
                         @input="onParamChanged(param)"
                         v-if="param.type == 'Bool'"
                         v-model="param.value"

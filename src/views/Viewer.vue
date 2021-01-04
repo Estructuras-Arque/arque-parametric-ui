@@ -129,14 +129,21 @@ export default {
             "Length (m)   (Y)",
             "System Height (m)",
             "Arch Height (m)",
-            "Pich Height (m)"
+            "Pich Height (m)",
+            "Minimum Radius (m)"
           ],
           params: []
         },
         {
           name: "Subdivisions",
           icon: "border-all",
-          names: ["N⍛ Divisions  (X)", "N⍛ Divisions  (Y)"],
+          names: [
+            "N⍛ Divisions  (X)",
+            "N⍛ Divisions  (Y)",
+            "Axis Count",
+            "N⍛ Divisions",
+            "Threshold"
+          ],
           params: []
         },
         {
@@ -147,7 +154,10 @@ export default {
             "N⍛ Columns (Y)",
             "Intermediate Columns",
             "Columns Diameter (mm)",
-            "Columns Thickness (mm)"
+            "Columns Thickness (mm)",
+            "Interior Columns",
+            "N⍛ Columns",
+            "N⍛ Intermediate Columns"
           ],
           params: []
         }
