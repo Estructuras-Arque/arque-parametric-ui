@@ -171,7 +171,7 @@ export default {
   height: 100%;
 }
 .mobile-sd-viewer {
-  width: 100%;
+  width: 70%;
   height: 720px !important;
   background-color: white;
 }

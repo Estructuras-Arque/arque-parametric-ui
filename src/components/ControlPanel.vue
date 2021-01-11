@@ -27,7 +27,12 @@
               >
                 <template #header>
                   <b-icon :icon="paramTab.icon"></b-icon>
-                  <span v-if="windowSize.isDesktop"> {{ paramTab.name }} </span>
+                  <span
+                    class="subtitle is-size-7"
+                    v-if="windowSize.width > 1240"
+                  >
+                    {{ paramTab.name }}
+                  </span>
                 </template>
                 <simplebar
                   data-simplebar-auto-hide="false"
@@ -97,11 +102,12 @@
                         </button>
                       </p>
                     </b-field>
-                    <br />
                     <b-field
                       v-for="(param, index) in paramTab.params"
                       :key="index"
                       class="param-controllers"
+                      :label="param.name"
+                      grouped
                     >
                       <b-slider
                         type="is-info"
@@ -111,7 +117,9 @@
                         :min="param.min"
                         :max="param.max"
                         v-model="param.value"
+                        rounded
                         ticks
+                        lazy
                       ></b-slider>
                       <b-switch
                         type="is-info"
@@ -119,8 +127,7 @@
                         @input="onParamChanged(param)"
                         v-if="param.type == 'Bool'"
                         v-model="param.value"
-                        >{{ param.value }}</b-switch
-                      >
+                      ></b-switch>
                     </b-field>
                   </div>
                   <div class="container" v-else>
@@ -129,7 +136,19 @@
                       :key="index"
                       class="param-controllers"
                       :label="param.name"
+                      grouped
                     >
+                      <b-input
+                        @input="onParamChanged(param)"
+                        class="is-input-number my-1"
+                        size="is-small"
+                        v-if="param.type == 'Int' || param.type == 'Float'"
+                        v-model.number="param.value"
+                        maxlength="param.max"
+                        :step="0.01"
+                        type="number"
+                        lazy
+                      ></b-input>
                       <b-slider
                         type="is-info"
                         size="is-small"
@@ -138,6 +157,9 @@
                         :min="param.min"
                         :max="param.max"
                         v-model="param.value"
+                        rounded
+                        ticks
+                        lazy
                       ></b-slider>
                       <b-switch
                         type="is-info"
@@ -145,8 +167,7 @@
                         @input="onParamChanged(param)"
                         v-if="param.type == 'Bool'"
                         v-model="param.value"
-                        >{{ param.value }}</b-switch
-                      >
+                      ></b-switch>
                     </b-field>
                   </div>
                 </simplebar>
@@ -171,7 +192,7 @@
           </div>
         </div>
       </b-tab-item>
-
+      <!-- if mobile models tabs -->
       <b-tab-item
         v-if="!windowSize.isDesktop"
         label="Downloads"
@@ -189,6 +210,7 @@
           </div>
         </div>
       </b-tab-item>
+      <!-- endif mobile models tabs -->
 
       <!-- TODO -->
       <b-tab-item disabled label="Viewer" icon="eye">
@@ -320,8 +342,15 @@ export default {
 
 <style lang="scss">
 .param-controllers {
-  margin-right: 2rem;
-  margin-left: 2rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
+  .label {
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .is-input-number {
+    width: 80px;
+  }
 }
 .is-fullheight {
   height: 100%;
@@ -372,6 +401,7 @@ export default {
     }
   }
 }
+
 #control-panel {
   ::-webkit-scrollbar {
     height: 6px;
@@ -395,6 +425,7 @@ export default {
     background-color: rgba(74, 74, 74, 0.8);
   }
 }
+
 #control-panel {
   padding: 0.75rem !important;
   z-index: 50;
