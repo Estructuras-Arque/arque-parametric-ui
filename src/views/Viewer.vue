@@ -78,16 +78,11 @@
 
         <!-- model downloads -->
 
-        <div
+        <downloads-panel
           v-if="windowSize.isDesktop"
-          id="model-info"
-          class="column has-background-light"
-        >
-          <div
-            id="panel-tabs"
-            class="container has-background-white tabs-component"
-          ></div>
-        </div>
+          :shapediver="shapediver"
+          :window-size="windowSize"
+        />
       </div>
     </section>
   </div>
@@ -95,16 +90,16 @@
 
 <script>
 import ControlPanel from "../components/ControlPanel.vue";
+import DownloadsPanel from "../components/DownloadsPanel.vue";
 import ShapediverViewer from "../components/ShapediverViewer.vue";
-// import DownloadsPanel from "../components/ShapediverViewer.vue";
 
 export default {
   name: "Viewer",
   props: ["windowSize"],
   components: {
     ControlPanel,
-    ShapediverViewer
-    // DownloadsPanel
+    ShapediverViewer,
+    DownloadsPanel
   },
   data() {
     return {
@@ -285,12 +280,7 @@ export default {
   overflow: hidden;
   height: calc(100vh - 53px) !important;
 }
-#model-info {
-  padding: 0.75rem !important;
-  z-index: 50;
-  -webkit-box-shadow: -5px 0px 5px -1px rgba(0, 0, 0, 0.3);
-  box-shadow: -5px 0px 5px -1px rgba(0, 0, 0, 0.3);
-}
+
 .hero-head {
   z-index: 100;
   height: 53px !important;

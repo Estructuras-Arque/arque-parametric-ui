@@ -1,8 +1,11 @@
 /* eslint-disable no-unused-vars */
 <template>
-  <div id="control-panel" class="column has-background-light">
+  <div
+    id="control-panel"
+    class="column has-background-light"
+    :class="windowSize.isDesktop ? 'desktop-sd-viewer' : 'mobile-control-panel'"
+  >
     <b-tabs
-      id="panel-tabs"
       class="has-background-white tabs-component"
       type="is-toggle"
       size="is-small"
@@ -109,6 +112,17 @@
                       :label="param.name"
                       grouped
                     >
+                      <b-input
+                        @input="onParamChanged(param)"
+                        class="is-input-number my-1"
+                        size="is-small"
+                        v-if="param.type == 'Int' || param.type == 'Float'"
+                        v-model.number="param.value"
+                        maxlength="param.max"
+                        :step="param.type == 'Int' ? 1 : 0.1"
+                        type="number"
+                        lazy
+                      ></b-input>
                       <b-slider
                         type="is-info"
                         size="is-small"
@@ -117,6 +131,7 @@
                         :min="param.min"
                         :max="param.max"
                         v-model="param.value"
+                        :step="param.type == 'Int' ? 1 : 0.1"
                         rounded
                         ticks
                         lazy
@@ -145,7 +160,7 @@
                         v-if="param.type == 'Int' || param.type == 'Float'"
                         v-model.number="param.value"
                         maxlength="param.max"
-                        :step="0.01"
+                        :step="param.type == 'Int' ? 1 : 0.1"
                         type="number"
                         lazy
                       ></b-input>
@@ -157,6 +172,7 @@
                         :min="param.min"
                         :max="param.max"
                         v-model="param.value"
+                        :step="param.type == 'Int' ? 1 : 0.1"
                         rounded
                         ticks
                         lazy
@@ -281,8 +297,6 @@ export default {
   props: ["windowSize", "topologies", "shapediver", "paramsTabs"],
   data() {
     return {
-      notMobile: false,
-      tHeight: false,
       isScrollable: true,
       maxHeight: 200,
       currentTopology: {
@@ -296,8 +310,6 @@ export default {
         icon: null
       },
       topologyMessage: null,
-      parametersTab: 1,
-      modifiersTab: 0,
       collapses: [
         {
           title: "Dimensions",
@@ -314,6 +326,7 @@ export default {
       ]
     };
   },
+
   mounted() {
     this.getTopologiesMessage();
     this.currentTopology = this.topologies[0];
@@ -432,5 +445,8 @@ export default {
   overflow: hidden;
   -webkit-box-shadow: 5px 0px 5px -1px rgba(0, 0, 0, 0.3);
   box-shadow: 5px 0px 5px -1px rgba(0, 0, 0, 0.3);
+}
+.mobile-control-panel {
+  height: 450px;
 }
 </style>

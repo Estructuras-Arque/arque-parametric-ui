@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */ /* eslint-disable no-unused-vars */
 <template>
   <div
-    class="column has-background-white viewport-container"
+    class="column has-background-white"
     :class="
       windowSize.width > 1024
-        ? 'is-half-desktop is-three-fifths-widescreen is-three-fifths-fullhd desktop-sd-viewer'
+        ? 'is-half-desktop is-three-fifths-widescreen is-three-fifths-fullhd'
         : 'mobile-sd-viewer'
     "
   >
@@ -30,7 +30,8 @@ export default {
       shapediver: null,
       maxHeight: 100,
       isScrollable: true,
-      allParams: []
+      allParams: [],
+      allDetails: []
     };
   },
   watch: {
@@ -98,8 +99,7 @@ export default {
     async showPluginContents(pluginId, bShow) {
       // load the geometry the first time a specific model needs to be displayed
       await this.shapediver.plugins.refreshPluginAsync(pluginId);
-      // console.log(this.shapediver.plugins.refreshPluginAsync(pluginId));
-      // this.loadedGeometries[pluginId] = true;
+
       var assets = this.shapediver.scene.get(null, pluginId).data;
       var paths = [];
       for (let i = 0; i < assets.length; i++) {
@@ -114,8 +114,7 @@ export default {
         console.log("on load", this.currentTopology.params);
 
         for (let i = 0; i < this.paramsTabs.length; i++) {
-          var paramTab = this.paramsTabs[i];
-          this.filterParamTabs(paramTab.name);
+          this.filterParamTabs(this.paramsTabs[i].name);
         }
       } else {
         this.shapediver.scene.toggleGeometry([], paths);
@@ -130,18 +129,10 @@ export default {
 
       console.log(frameParamNames, tab);
 
-      var tabParams = currentParams.filter(function(param) {
+      tab.params = currentParams.filter(function(param) {
         return frameParamNames.includes(param.name.trim());
       });
 
-      console.log(tabParams);
-
-      currentParams = currentParams.filter(function(param) {
-        return !frameParamNames.includes(param.name.trim())
-          ? true
-          : currentParams.splice(currentParams.indexOf(param), 1) && false;
-      });
-      tab.params = tabParams;
       console.log("after load", currentParams);
     }
   }
@@ -171,7 +162,7 @@ export default {
   height: 100%;
 }
 .mobile-sd-viewer {
-  width: 70%;
+  width: 100% !important;
   height: 720px !important;
   background-color: white;
 }
