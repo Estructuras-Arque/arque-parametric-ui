@@ -2,8 +2,7 @@
 <template>
   <div
     id="control-panel"
-    class="column has-background-light"
-    :class="windowSize.isDesktop ? 'desktop-sd-viewer' : 'mobile-control-panel'"
+    class="column is-one-fifth-desktop is-one-fifth-fullhd has-background-light"
   >
     <b-tabs
       class="has-background-white tabs-component"
@@ -40,7 +39,7 @@
                 <simplebar
                   data-simplebar-auto-hide="false"
                   :class="
-                    windowSize.width < 1024 ? 'has-max-height' : 'simplebar'
+                    windowSize.width < 1024 ? 'has-max-height-5' : 'simplebar'
                   "
                 >
                   <div class="container" v-if="paramTab.name == 'Frame'">
@@ -306,6 +305,7 @@ export default {
         assets: [],
         paths: [],
         params: [],
+        details: [],
         ticket: null,
         icon: null
       },
@@ -342,7 +342,7 @@ export default {
     },
     onParamChanged(param) {
       this.$emit("param-changed", param);
-      console.log(param.value);
+      // console.log(param.value);
     },
     getTopologiesMessage() {
       var count = "(" + this.topologies.length.toString() + ")";
@@ -368,7 +368,7 @@ export default {
 .is-fullheight {
   height: 100%;
 }
-.has-max-height {
+.has-max-height-5 {
   max-height: 500px;
   min-height: 300px;
 }

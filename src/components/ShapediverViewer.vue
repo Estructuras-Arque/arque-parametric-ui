@@ -1,12 +1,7 @@
 /* eslint-disable no-unused-vars */ /* eslint-disable no-unused-vars */
 <template>
   <div
-    class="column has-background-white"
-    :class="
-      windowSize.width > 1024
-        ? 'is-half-desktop is-three-fifths-widescreen is-three-fifths-fullhd'
-        : 'mobile-sd-viewer'
-    "
+    class="column is-three-fifths-fullhd is-three-fifths-desktop has-background-white"
   >
     <div class="has-background-light" id="sdv-container">
       <b-loading
@@ -30,8 +25,7 @@ export default {
       shapediver: null,
       maxHeight: 100,
       isScrollable: true,
-      allParams: [],
-      allDetails: []
+      allParams: []
     };
   },
   watch: {
@@ -71,7 +65,7 @@ export default {
         await this.initModel(this.topologies[i].ticket, this.topologies[i].id);
       }
       this.allParams = this.shapediver.parameters.get().data;
-      await this.getPluginsParams();
+      await this.getPluginParams();
       await this.showPluginContents(
         this.currentTopology.id,
         this.currentTopology.loaded
@@ -87,7 +81,7 @@ export default {
       });
     },
 
-    async getPluginsParams() {
+    async getPluginParams() {
       this.topologies.forEach(topology => {
         topology.params = this.allParams.filter(
           param => param.plugin == topology.id
@@ -95,6 +89,29 @@ export default {
       });
     },
 
+    async getPluginDetails() {
+      this.currentTopology.details = this.shapediver.scene.getData(
+        {},
+        this.currentTopology.id
+      ).data;
+      var details = this.currentTopology.details.filter(detail => {
+        return detail.plugin == this.currentTopology.id;
+      });
+      this.formatDetailsString("Weight:");
+      this.currentTopology.details = details;
+    },
+
+    formatDetailsString(key) {
+      var pattern = key;
+      var data;
+      this.currentTopology.details.forEach(element => {
+        data = element.data;
+      });
+      var title = data.filter(function(str) {
+        return str.indexOf(pattern) === 0;
+      });
+      console.log(title);
+    },
     // eslint-disable-next-line no-unused-vars
     async showPluginContents(pluginId, bShow) {
       // load the geometry the first time a specific model needs to be displayed
@@ -111,15 +128,17 @@ export default {
       if (bShow) {
         this.shapediver.scene.toggleGeometry(paths, []);
         this.geometryLoading = false;
-        console.log("on load", this.currentTopology.params);
+        // console.log("on load", this.currentTopology.params);
 
         for (let i = 0; i < this.paramsTabs.length; i++) {
           this.filterParamTabs(this.paramsTabs[i].name);
         }
+        await this.getPluginDetails();
       } else {
         this.shapediver.scene.toggleGeometry([], paths);
       }
     },
+
     filterParamTabs(name) {
       var currentParams = this.currentTopology.params;
 
@@ -127,13 +146,13 @@ export default {
 
       var frameParamNames = tab.names;
 
-      console.log(frameParamNames, tab);
+      // console.log(frameParamNames, tab);
 
       tab.params = currentParams.filter(function(param) {
         return frameParamNames.includes(param.name.trim());
       });
 
-      console.log("after load", currentParams);
+      // console.log("after load", currentParams);
     }
   }
 };

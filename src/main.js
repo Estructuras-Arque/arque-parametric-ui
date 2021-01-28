@@ -51,7 +51,8 @@ import {
     faCamera,
     faCameraRetro,
     faCubes,
-    faCube
+    faCube,
+    faTable
 } from "@fortawesome/free-solid-svg-icons";
 import {} from "@fortawesome/free-regular-svg-icons";
 import {
@@ -110,7 +111,8 @@ library.add(
     faCamera,
     faCameraRetro,
     faCubes,
-    faCube
+    faCube,
+    faTable
 );
 Vue.component("vue-fontawesome", FontAwesomeIcon);
 import Buefy from "buefy";
