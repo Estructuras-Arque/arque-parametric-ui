@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */ /* eslint-disable no-unused-vars */
-<template>
+<template lang="html">
   <div
     class="column is-three-fifths-fullhd is-three-fifths-desktop has-background-white"
   >
@@ -25,8 +24,21 @@ export default {
       shapediver: null,
       maxHeight: 100,
       isScrollable: true,
-      allParams: []
+      allParams: [],
+      details: [],
+      detailsTable: [],
+      tempArray: []
     };
+  },
+  computed: {
+    orderedDetails: function() {
+      function compare(a, b) {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      }
+      return this.details.slice(0).sort(compare);
+    }
   },
   watch: {
     // whenever currentTopology changes, this function will run
@@ -90,27 +102,66 @@ export default {
     },
 
     async getPluginDetails() {
-      this.currentTopology.details = this.shapediver.scene.getData(
+      var allDetails = this.shapediver.scene.getData(
         {},
         this.currentTopology.id
       ).data;
-      var details = this.currentTopology.details.filter(detail => {
+      // filter details by model id
+      this.details = allDetails.filter(detail => {
         return detail.plugin == this.currentTopology.id;
       });
-      this.formatDetailsString("Weight:");
-      this.currentTopology.details = details;
+      this.$emit("details-ready", this.details);
     },
 
-    formatDetailsString(key) {
-      var pattern = key;
-      var data;
-      this.currentTopology.details.forEach(element => {
-        data = element.data;
-      });
-      var title = data.filter(function(str) {
-        return str.indexOf(pattern) === 0;
-      });
-      console.log(title);
+    splitDetailString(data, index) {
+      for (let i = 0; i < data.data.length; i++) {
+        var element = data.data[i];
+        // eslint-disable-next-line no-useless-escape
+        this.detailsTable[index].data.push(element.match(/[\d\.]+|\D+/g));
+      }
+    },
+
+    organizeDetailsArray() {
+      for (let i = 0; i < this.orderedDetails.length; i++) {
+        var table = this.orderedDetails[i];
+        this.detailsTable.length = this.orderedDetails.length;
+        this.detailsTable[i] = new Object();
+        this.detailsTable[i].name = table.name;
+        this.detailsTable[i].id = table.id;
+        this.detailsTable[i].plugin = table.plugin;
+        this.detailsTable[i].data = [];
+        this.splitDetailString(table, i);
+        this.$emit("details-ready", this.detailsTable);
+      }
+    },
+    addToObject(obj, key, value, index) {
+      // Create a temp object and index variable
+      var temp = {};
+      var i = 0;
+
+      // Loop through the original object
+      for (var prop in obj) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (obj.hasOwnProperty(prop)) {
+          // If the indexes match, add the new item
+          if (i === index && key && value) {
+            temp[key] = value;
+          }
+
+          // Add the current item in the loop to the temp obj
+          temp[prop] = obj[prop];
+
+          // Increase the count
+          i++;
+        }
+      }
+
+      // If no index, add to the end
+      if (!index && key && value) {
+        temp[key] = value;
+      }
+
+      return temp;
     },
     // eslint-disable-next-line no-unused-vars
     async showPluginContents(pluginId, bShow) {
@@ -128,12 +179,12 @@ export default {
       if (bShow) {
         this.shapediver.scene.toggleGeometry(paths, []);
         this.geometryLoading = false;
-        // console.log("on load", this.currentTopology.params);
 
         for (let i = 0; i < this.paramsTabs.length; i++) {
           this.filterParamTabs(this.paramsTabs[i].name);
         }
         await this.getPluginDetails();
+        this.organizeDetailsArray();
       } else {
         this.shapediver.scene.toggleGeometry([], paths);
       }

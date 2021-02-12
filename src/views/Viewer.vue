@@ -66,6 +66,7 @@
         <!-- shapediver-viewer -->
 
         <shapediver-viewer
+          @details-ready="onDetailsReady"
           :params-tabs="paramsTabs"
           @shapediver-ready="onShapediverReady"
           :window-size="windowSize"
@@ -80,6 +81,7 @@
           :shapediver="shapediver"
           :window-size="windowSize"
           :currentTopology="currentTopology"
+          :details="details"
         />
       </div>
     </section>
@@ -156,12 +158,13 @@ export default {
         }
       ],
       shapediver: null,
+      details: [],
       geometryReady: false,
       showRight: true,
       showLeft: true,
       isLoading: true,
       currentTopology: {
-        name: "None Selected",
+        name: "undefined",
         loaded: false,
         id: null,
         assets: [],
@@ -255,10 +258,14 @@ export default {
         this.isLoading = false;
       }
     },
+    onDetailsReady(value) {
+      this.details = value;
+    },
     onTopologyReady(value) {
       value.loaded = true;
       this.currentTopology = value;
     },
+
     onParamsTabsReady(value) {
       this.paramsTabs = value;
     },

@@ -22,15 +22,17 @@
                 <b-collapse
                   class="card mb-1"
                   animation="slide"
-                  v-for="(details, index) of this.allDetails"
+                  v-for="(dts, index) in details"
                   :key="index"
                   :open="isOpen == index"
                   @open="isOpen = index"
                 >
                   <template #trigger="props">
                     <div class="card-header" role="button">
-                      <p class="card-header-title is-size-7">
-                        {{ details.name }}
+                      <p
+                        class="card-header-title is-size-7 has-text-weight-bold"
+                      >
+                        {{ dts.name }}
                       </p>
                       <a class="card-header-icon">
                         <b-icon :icon="props.open ? 'angle-down' : 'angle-up'">
@@ -43,14 +45,23 @@
                       <table class="table">
                         <thead>
                           <tr>
-                            <th
-                              v-for="(detail, index) in details.data"
-                              :key="index"
-                            >
-                              <abbr title="Position">{{ detail }}</abbr>
+                            <th v-for="(value, index) in row" :key="index">
+                              <abbr :title="value">{{ value }}</abbr>
                             </th>
                           </tr>
                         </thead>
+                        <!-- <tfoot>
+                          <tr>
+                            <th><abbr title="Position">Pos</abbr></th>
+                          </tr>
+                        </tfoot> -->
+                        <tbody>
+                          <tr v-for="(data, index) in dts.data" :key="index">
+                            <th v-for="(detail, index) in data" :key="index">
+                              {{ detail }}
+                            </th>
+                          </tr>
+                        </tbody>
                       </table>
                     </div>
                   </div>
@@ -82,39 +93,13 @@ import simplebar from "simplebar-vue";
 import "simplebar/dist/simplebar.min.css";
 export default {
   name: "DownloadsPanel",
-  props: ["windowSize", "shapediver", "currentTopology"],
+  props: ["windowSize", "shapediver", "currentTopology", "details"],
   components: { simplebar },
   data() {
     return {
-      allDetails: [],
-      isOpen: 0,
-      detailsName: ["Count:", "Weight:", "Weight/m²:"]
+      isOpen: 2,
+      row: ["Name:", "Value", "Unit"]
     };
-  },
-  mounted() {
-    this.detailsReady();
-    this.orderBy();
-  },
-  methods: {
-    async detailsReady() {
-      this.allDetails = this.currentTopology.details;
-    },
-    orderBy() {
-      // sort by name
-      this.allDetails.sort(function(a, b) {
-        var nameA = a.name.toUpperCase(); // ignore upper and lowercase
-        var nameB = b.name.toUpperCase(); // ignore upper and lowercase
-        if (nameA < nameB) {
-          return -1;
-        }
-        if (nameA > nameB) {
-          return 1;
-        }
-
-        // names must be equal
-        return 0;
-      });
-    }
   }
 };
 </script>
