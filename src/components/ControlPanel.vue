@@ -1,8 +1,7 @@
 /* eslint-disable no-unused-vars */
 <template>
   <div
-    id="control-panel"
-    class="column is-one-fifth-desktop is-one-fifth-fullhd has-background-light"
+    class="column is-one-fifth-desktop is-one-fifth-fullhd has-background-light control-panel"
   >
     <b-tabs
       class="has-background-white tabs-component"
@@ -371,14 +370,24 @@ export default {
 .has-max-height-5 {
   max-height: 500px;
   min-height: 300px;
+  .info-panel {
+    -webkit-box-shadow: 0px -2px 5px -1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px -5px 5px -1px rgba(0, 0, 0, 0.3);
+  }
+}
+.has-max-height-4 {
+  max-height: 720px;
+  min-height: 500px;
 }
 .container .has-min-height {
   min-height: 100px;
 }
+
 .simplebar {
   width: 100%;
   height: 100%;
 }
+
 .params-tabs {
   width: 100%;
   height: 100%;
@@ -400,6 +409,7 @@ export default {
     }
   }
 }
+
 .tabs-component {
   height: 100% !important;
   box-shadow: inset 1px 1px 10px 6px rgba(0, 0, 0, 0.08);
@@ -415,7 +425,7 @@ export default {
   }
 }
 
-#control-panel {
+.control-panel {
   ::-webkit-scrollbar {
     height: 6px;
   }
@@ -439,12 +449,16 @@ export default {
   }
 }
 
-#control-panel {
+.control-panel {
   padding: 0.75rem !important;
   z-index: 50;
   overflow: hidden;
   -webkit-box-shadow: 5px 0px 5px -1px rgba(0, 0, 0, 0.3);
   box-shadow: 5px 0px 5px -1px rgba(0, 0, 0, 0.3);
+}
+.control-panel.model-info {
+  -webkit-box-shadow: -5px 0px 5px -1px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: -5px 0px 5px -1px rgba(0, 0, 0, 0.3) !important;
 }
 .mobile-control-panel {
   height: 450px;

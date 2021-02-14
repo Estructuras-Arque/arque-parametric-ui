@@ -276,6 +276,10 @@ export default {
         value: param.value,
         plugin: param.plugin
       });
+      this.updateDetails();
+    },
+    updateDetails() {
+      this.shapediver.scene.updateAsync({});
     }
   }
 };
