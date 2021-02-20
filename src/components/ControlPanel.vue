@@ -43,6 +43,7 @@
                 >
                   <div class="container" v-if="paramTab.name == 'Frame'">
                     <b-field
+                      v-if="shapediver"
                       class="mt-1 ml-3 has-text-grey"
                       :message="topologyMessage"
                       label="Topology"
@@ -337,7 +338,7 @@ export default {
       location.reload();
     },
     changeTopology() {
-      this.$emit("topology-ready", this.currentTopology);
+      this.$emit("topology-changed", this.currentTopology);
     },
     onParamChanged(param) {
       this.$emit("param-changed", param);

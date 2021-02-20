@@ -24,21 +24,8 @@ export default {
       shapediver: null,
       maxHeight: 100,
       isScrollable: true,
-      allParams: [],
-      details: [],
-      detailsTable: [],
-      tempArray: []
+      allParams: []
     };
-  },
-  computed: {
-    orderedDetails: function() {
-      function compare(a, b) {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      }
-      return this.details.slice(0).sort(compare);
-    }
   },
   watch: {
     // whenever currentTopology changes, this function will run
@@ -56,6 +43,9 @@ export default {
       this.initApp();
     }
   },
+  // beforeDestroy() {
+  //   this.shapediver.viewports.destroy();
+  // },
   methods: {
     async initApp() {
       // Load the viewer without a ticket, and register separate communication plugins for each model ticket.
@@ -101,38 +91,6 @@ export default {
       });
     },
 
-    async getPluginDetails() {
-      var allDetails = this.shapediver.scene.getData(
-        {},
-        this.currentTopology.id
-      ).data;
-      // filter details by model id
-      this.details = allDetails.filter(detail => {
-        return detail.plugin == this.currentTopology.id;
-      });
-    },
-
-    splitDetailString(data, index) {
-      for (let i = 0; i < data.data.length; i++) {
-        var element = data.data[i];
-        // eslint-disable-next-line no-useless-escape
-        this.detailsTable[index].data.push(element.match(/[\d\.]+|\D+/g));
-      }
-    },
-
-    organizeDetailsArray() {
-      for (let i = 0; i < this.orderedDetails.length; i++) {
-        var table = this.orderedDetails[i];
-        this.detailsTable.length = this.orderedDetails.length;
-        this.detailsTable[i] = new Object();
-        this.detailsTable[i].name = table.name;
-        this.detailsTable[i].id = table.id;
-        this.detailsTable[i].plugin = table.plugin;
-        this.detailsTable[i].data = [];
-        this.splitDetailString(table, i);
-        this.$emit("details-ready", this.detailsTable);
-      }
-    },
     // eslint-disable-next-line no-unused-vars
     async showPluginContents(pluginId, bShow) {
       // load the geometry the first time a specific model needs to be displayed
@@ -153,8 +111,6 @@ export default {
         for (let i = 0; i < this.paramsTabs.length; i++) {
           this.filterParamTabs(this.paramsTabs[i].name);
         }
-        await this.getPluginDetails();
-        this.organizeDetailsArray();
       } else {
         this.shapediver.scene.toggleGeometry([], paths);
       }

@@ -1,4 +1,4 @@
-<template>
+<template lang="html">
   <div class="viewer">
     <section class="hero is-fullheight is-bold">
       <!-- Hero head: will stick at the top -->
@@ -10,43 +10,8 @@
       >
       </b-loading>
       <!-- navbar -->
-      <div class="hero-head has-background-light">
-        <b-navbar class="navbar" id="navbar-viewer">
-          <template slot="brand">
-            <b-navbar-item href="http://estructurasarque.com">
-              <img
-                src="http://estructurasarque.com/wp-content/uploads/2017/11/logo-web-arque.png"
-                alt="Lightweight UI components for Vue.js based on Bulma"
-              />
-            </b-navbar-item>
-          </template>
-          <template slot="start">
-            <b-navbar-item href="/documentation">
-              Documentation
-            </b-navbar-item>
-            <b-navbar-dropdown collapsible label="About Us">
-              <b-navbar-item href="/about">The team</b-navbar-item>
-              <b-navbar-item
-                href="http://estructurasarque.com/arque-spatial-systems/"
-              >
-                Our Services
-              </b-navbar-item>
-              <b-navbar-item @click="$router.push({ name: 'About' })">
-                Contact Us
-              </b-navbar-item>
-            </b-navbar-dropdown>
-          </template>
-
-          <template slot="end">
-            <b-navbar-item tag="div">
-              <div class="buttons">
-                <a class="button is-info is-outlined" @click="logout">
-                  <strong>Sign out</strong>
-                </a>
-              </div>
-            </b-navbar-item>
-          </template>
-        </b-navbar>
+      <div class="hero-head has-background-light" id="navbar-viewer">
+        <navbar />
       </div>
 
       <!-- viewer -->
@@ -58,7 +23,7 @@
           :params-tabs="paramsTabs"
           :shapediver="shapediver"
           @param-changed="onParamChanged"
-          @topology-ready="onTopologyReady"
+          @topology-changed="onTopologyChanged"
           :topologies="topologies"
           :window-size="windowSize"
         />
@@ -66,7 +31,6 @@
         <!-- shapediver-viewer -->
 
         <shapediver-viewer
-          @details-ready="onDetailsReady"
           :params-tabs="paramsTabs"
           @shapediver-ready="onShapediverReady"
           :window-size="windowSize"
@@ -77,11 +41,11 @@
         <!-- model downloads -->
 
         <downloads-panel
+          :details="details"
           v-if="windowSize.isDesktop"
           :shapediver="shapediver"
           :window-size="windowSize"
           :currentTopology="currentTopology"
-          :details="details"
         />
       </div>
     </section>
@@ -92,6 +56,7 @@
 import ControlPanel from "../components/ControlPanel.vue";
 import DownloadsPanel from "../components/DownloadsPanel.vue";
 import ShapediverViewer from "../components/ShapediverViewer.vue";
+import Navbar from "../components/Navbar.vue";
 
 export default {
   name: "Viewer",
@@ -99,7 +64,8 @@ export default {
   components: {
     ControlPanel,
     ShapediverViewer,
-    DownloadsPanel
+    DownloadsPanel,
+    Navbar
   },
   data() {
     return {
@@ -158,7 +124,6 @@ export default {
         }
       ],
       shapediver: null,
-      details: [],
       geometryReady: false,
       showRight: true,
       showLeft: true,
@@ -241,27 +206,25 @@ export default {
             "d6f1065553dc495611ad53e43d30cfa23bb32af84bcc433e3ac31ec993ee98a18cef1fdc4e3b0b260a8c3fe445f7c768d8b4d17ff14a60c3d3be55b3dccdb273748d66a0c110e98c05af7c465a5b22c695542291f5cbbc4ce123645a016c3103740ec26ce205bea62c43b0ca753fca9b74efe63e8ad5-092b3c8c0d6431811184f2dcbe10fbd1",
           icon: ""
         }
-      ]
+      ],
+      details: [],
+
+      detailsTable: [],
+      updated: false
     };
   },
-  methods: {
-    async logout() {
-      await this.$auth.logout();
-      await this.isAuthenticated();
 
-      // Navigate back to home
-      this.$router.push({ path: "/" });
-    },
+  methods: {
     onShapediverReady(value) {
       this.shapediver = value;
       if (this.shapediver != null) {
         this.isLoading = false;
       }
     },
-    onDetailsReady(value) {
-      this.details = value;
-    },
-    onTopologyReady(value) {
+    // onDetailsReady(value) {
+    //   this.details = value;
+    // },
+    onTopologyChanged(value) {
       value.loaded = true;
       this.currentTopology = value;
     },
@@ -269,17 +232,51 @@ export default {
     onParamsTabsReady(value) {
       this.paramsTabs = value;
     },
-    onParamChanged(param) {
-      this.shapediver.parameters.updateAsync({
+
+    async getPluginDetails() {
+      var allDetails = await this.shapediver.scene.getData(
+        {},
+        this.currentTopology.id
+      ).data;
+      // console.log("connected");
+      // filter details by model id
+      this.details = allDetails.filter(detail => {
+        return detail.plugin == this.currentTopology.id;
+      });
+    },
+
+    // splitDetailString(data, index) {
+    //   for (let i = 0; i < data.data.length; i++) {
+    //     var element = data.data[i];
+    //     // eslint-disable-next-line no-useless-escape
+    //     this.detailsTable[index].data.push(element.match(/[\d\.]+|\D+/g));
+    //   }
+    //   this.currentTopology.details = this.detailsTable;
+    // },
+
+    // organizeDetailsArray() {
+    //   for (let i = 0; i < this.orderedDetails.length; i++) {
+    //     var table = this.orderedDetails[i];
+    //     this.detailsTable.length = this.orderedDetails.length;
+    //     this.detailsTable[i] = new Object();
+    //     this.detailsTable[i].name = table.name;
+    //     this.detailsTable[i].id = table.id;
+    //     this.detailsTable[i].plugin = table.plugin;
+    //     this.detailsTable[i].data = [];
+    //     this.splitDetailString(table, i);
+    //   }
+    // },
+
+    async onParamChanged(param) {
+      this.updated = !this.updated;
+      // console.log("param changed");
+      await this.shapediver.parameters.updateAsync({
         name: param.name,
         id: param.id,
         value: param.value,
         plugin: param.plugin
       });
-      this.updateDetails();
-    },
-    updateDetails() {
-      this.shapediver.scene.updateAsync({});
+      await this.getPluginDetails();
     }
   }
 };

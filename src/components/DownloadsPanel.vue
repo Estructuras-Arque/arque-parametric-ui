@@ -1,4 +1,4 @@
-<template>
+<template lang="html">
   <div
     class="column is-one-fifth-fullhd is-one-fifth-desktop control-panel model-info"
   >
@@ -13,69 +13,11 @@
           <div class="section is-paddingless info-panel">
             <simplebar data-simple-bar-auto-hide="false" class="simplebar">
               <div class="container is-paddingless">
-                <b-collapse
-                  class="card mb-1"
-                  animation="slide"
-                  v-for="(dts, index) in details"
-                  :key="index"
-                  :open="isOpen == index"
-                >
-                  <template #trigger="props">
-                    <div class="card-header" role="button">
-                      <p
-                        class="card-header-title is-size-7 has-text-weight-bold"
-                      >
-                        {{ dts.name }} - {{ dts.plugin }}
-                      </p>
-                      <a class="card-header-icon">
-                        <b-icon :icon="props.open ? 'angle-down' : 'angle-up'">
-                        </b-icon>
-                      </a>
-                    </div>
-                  </template>
-                  <div class="card-content is-paddingless">
-                    <div class="content">
-                      <table
-                        class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                      >
-                        <thead>
-                          <tr>
-                            <th v-for="(value, index) in row" :key="index">
-                              <abbr
-                                class="is-size-7 has-text-weight-bold"
-                                :title="value"
-                                >{{ value }}</abbr
-                              >
-                            </th>
-                          </tr>
-                        </thead>
-                        <!-- <tfoot>
-                          <tr>
-                            <th><abbr title="Position">Pos</abbr></th>
-                          </tr>
-                        </tfoot> -->
-                        <tbody>
-                          <tr v-for="(data, index) in dts.data" :key="index">
-                            <th v-for="(detail, index) in data" :key="index">
-                              <p
-                                class="is-size-7 has-text-weight-semibold"
-                                v-if="index == 0"
-                              >
-                                {{ detail }}
-                              </p>
-                              <p
-                                class="is-size-7 has-text-weight-normal"
-                                v-if="index != 0"
-                              >
-                                {{ detail }}
-                              </p>
-                            </th>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </b-collapse>
+                <collapse
+                  :details="details"
+                  :current-topology="currentTopology"
+                  :isOpen="isOpen"
+                />
               </div>
             </simplebar>
           </div>
@@ -83,13 +25,13 @@
         <b-tab-item label="Downloads" icon="cloud-download-alt">
           <div class="section is-paddingless">
             <div class="container is-fluid is-paddingless">
-              <div class="notification is-warning">
+              <p class="notification is-warning">
                 What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
                 printing and typesetting industry Lorem Ipsum has been the
                 industry's standard dummy text ever since the 1500s when an
                 unknown printer took a galley of type and scrambled it to make a
                 type specimen book it has?
-              </div>
+              </p>
             </div>
           </div>
         </b-tab-item>
@@ -101,17 +43,38 @@
 <script>
 import simplebar from "simplebar-vue";
 import "simplebar/dist/simplebar.min.css";
+import Collapse from "@/components/Collapse.vue";
 export default {
   name: "DownloadsPanel",
   props: ["windowSize", "shapediver", "currentTopology", "details"],
-  components: { simplebar },
+  components: { simplebar, Collapse },
   data() {
     return {
-      isOpen: 2,
-      row: ["Name:", "Value", "Unit"]
+      isOpen: 2
     };
   },
-  methods: {}
+  methods: {
+    // splitDetailString(data, index) {
+    //   for (let i = 0; i < data.data.length; i++) {
+    //     var element = data.data[i];
+    //     // eslint-disable-next-line no-useless-escape
+    //     this.table[index].data.push(element.match(/[\d\.]+|\D+/g));
+    //   }
+    //   this.currentTopology.details = this.table;
+    // },
+    // organizeDetailsArray() {
+    //   for (let i = 0; i < this.orderedDetails.length; i++) {
+    //     var table = this.orderedDetails[i];
+    //     this.table.length = this.orderedDetails.length;
+    //     this.table[i] = new Object();
+    //     this.table[i].name = table.name;
+    //     this.table[i].id = table.id;
+    //     this.table[i].plugin = table.plugin;
+    //     this.table[i].data = [];
+    //     this.splitDetailString(table, i);
+    //   }
+    // }
+  }
 };
 </script>
 
