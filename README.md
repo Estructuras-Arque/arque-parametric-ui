@@ -1,4 +1,4 @@
-# arque-vue-1.0
+# arque-vue-v0.1
 
 ## Project setup
 ```
