@@ -9,6 +9,9 @@
       </b-navbar-item>
     </template>
     <template #start>
+      <b-navbar-item href="/app">
+        CloudApp
+      </b-navbar-item>
       <b-navbar-item href="/documentation">
         Documentation
       </b-navbar-item>
@@ -27,7 +30,10 @@
 
     <template #end>
       <b-navbar-item tag="div">
-        <div class="buttons">
+        <div v-if="authenticated" class="buttons">
+          <a class="button is-link" @click="$router.push({ path: '/profile' })">
+            <strong>Profile</strong>
+          </a>
           <a class="button is-info is-outlined" @click="logout">
             <strong>Sign out</strong>
           </a>
@@ -40,6 +46,7 @@
 <script>
 export default {
   name: "Navbar",
+  props: ["authenticated"],
   methods: {
     async logout() {
       await this.$auth.logout();
@@ -52,4 +59,8 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss">
+.navbar {
+  height: 100% !important;
+}
+</style>

@@ -1,12 +1,13 @@
 <template>
   <div id="app">
     <!-- <window-size /> -->
-    <transition name="slidings">
-      <router-view
-        :window-size="windowSize"
-        :is-authenticated="isAuthenticated"
-      />
-    </transition>
+    <!-- <transition name="sliding"> -->
+    <router-view
+      :is-authenticated="isAuthenticated"
+      :window-size="windowSize"
+      :authenticated="authenticated"
+    />
+    <!-- </transition> -->
   </div>
 </template>
 <script>
@@ -60,7 +61,7 @@ export default {
       this.$router.push({ path: "/" });
     },
     login() {
-      this.$auth.loginRedirect("/documentation");
+      this.$auth.loginRedirect("/app");
     },
     isDesktop() {
       this.windowSize.isDesktop = true;

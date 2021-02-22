@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="viewer">
+  <div v-if="authenticated" class="viewer">
     <section class="hero is-fullheight is-bold">
       <!-- Hero head: will stick at the top -->
       <b-loading
@@ -11,14 +11,13 @@
       </b-loading>
       <!-- navbar -->
       <div class="hero-head has-background-light" id="navbar-viewer">
-        <navbar />
+        <navbar :authenticated="authenticated" />
       </div>
 
       <!-- viewer -->
 
       <div id="viewer" class="columns is-desktop is-gapless">
         <!-- control panel -->
-
         <control-panel
           :params-tabs="paramsTabs"
           :shapediver="shapediver"
@@ -42,8 +41,8 @@
 
         <downloads-panel
           :details="details"
-          v-if="windowSize.isDesktop"
           :shapediver="shapediver"
+          :params-tabs="paramsTabs"
           :window-size="windowSize"
           :currentTopology="currentTopology"
         />
@@ -60,7 +59,7 @@ import Navbar from "../components/Navbar.vue";
 
 export default {
   name: "Viewer",
-  props: ["windowSize", "isAuthenticated"],
+  props: ["windowSize", "authenticated"],
   components: {
     ControlPanel,
     ShapediverViewer,
@@ -245,28 +244,6 @@ export default {
       });
     },
 
-    // splitDetailString(data, index) {
-    //   for (let i = 0; i < data.data.length; i++) {
-    //     var element = data.data[i];
-    //     // eslint-disable-next-line no-useless-escape
-    //     this.detailsTable[index].data.push(element.match(/[\d\.]+|\D+/g));
-    //   }
-    //   this.currentTopology.details = this.detailsTable;
-    // },
-
-    // organizeDetailsArray() {
-    //   for (let i = 0; i < this.orderedDetails.length; i++) {
-    //     var table = this.orderedDetails[i];
-    //     this.detailsTable.length = this.orderedDetails.length;
-    //     this.detailsTable[i] = new Object();
-    //     this.detailsTable[i].name = table.name;
-    //     this.detailsTable[i].id = table.id;
-    //     this.detailsTable[i].plugin = table.plugin;
-    //     this.detailsTable[i].data = [];
-    //     this.splitDetailString(table, i);
-    //   }
-    // },
-
     async onParamChanged(param) {
       this.updated = !this.updated;
       // console.log("param changed");
@@ -299,7 +276,7 @@ export default {
 }
 #navbar-viewer {
   z-index: 100;
-  height: 53px !important;
+  // height: 53px !important;
   -webkit-box-shadow: 0px 2px 5px -1px rgba(0, 0, 0, 0.3);
   box-shadow: 0px 2px 5px -1px rgba(0, 0, 0, 0.3);
 }

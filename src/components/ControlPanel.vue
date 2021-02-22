@@ -1,25 +1,24 @@
 /* eslint-disable no-unused-vars */
 <template>
   <div
-    class="column is-one-fifth-desktop is-one-fifth-fullhd has-background-light control-panel"
+    class="column is-one-fifth-fullhd is-one-quarter-desktop has-background-light control-panel"
   >
     <b-tabs
       class="has-background-white tabs-component"
       type="is-toggle"
       size="is-small"
       expanded
+      animation="slide-next"
     >
       <b-tab-item label="Parameters" icon="tools">
-        <div class="section is-paddingless is-fullheight">
-          <div
-            class="container is-fluid is-paddingless is-fullheight has-background-light"
-          >
+        <div class="section is-paddingless has-parent-height">
+          <div class="container is-fluid is-paddingless has-background-light">
             <b-tabs
               class="params-tabs"
-              :position="windowSize.width < 1024 ? 'is-right' : ''"
+              :position="!windowSize.isDesktop ? 'is-right' : ''"
               size="is-small"
               type="is-boxed"
-              :vertical="windowSize.width < 1024 ? true : false"
+              :vertical="!windowSize.isDesktop ? true : false"
             >
               <b-tab-item
                 id="param-tab"
@@ -37,9 +36,7 @@
                 </template>
                 <simplebar
                   data-simplebar-auto-hide="false"
-                  :class="
-                    windowSize.width < 1024 ? 'has-max-height-5' : 'simplebar'
-                  "
+                  :class="windowSize.isDesktop ? 'max-height-6' : 'simplebar'"
                 >
                   <div class="container" v-if="paramTab.name == 'Frame'">
                     <b-field
@@ -191,24 +188,22 @@
           </div>
         </div>
       </b-tab-item>
-      <b-tab-item
+      <!-- <b-tab-item
         v-if="!windowSize.isDesktop"
         label="Structure Details"
         icon="cubes"
         ><div class="section is-paddingless">
           <div class="container is-fluid is-paddingless">
-            <div class="notification is-warning">
-              What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
-              printing and typesetting industry Lorem Ipsum has been the
-              industry's standard dummy text ever since the 1500s when an
-              unknown printer took a galley of type and scrambled it to make a
-              type specimen book it has?
-            </div>
+            <collapse
+              :details="details"
+              :current-topology="currentTopology"
+              :isOpen="isOpen"
+            />
           </div>
         </div>
-      </b-tab-item>
+      </b-tab-item> -->
       <!-- if mobile models tabs -->
-      <b-tab-item
+      <!-- <b-tab-item
         v-if="!windowSize.isDesktop"
         label="Downloads"
         icon="cloud-download-alt"
@@ -224,7 +219,7 @@
             </div>
           </div>
         </div>
-      </b-tab-item>
+      </b-tab-item> -->
       <!-- endif mobile models tabs -->
 
       <!-- TODO -->
@@ -293,9 +288,10 @@ export default {
   components: {
     simplebar
   },
-  props: ["windowSize", "topologies", "shapediver", "paramsTabs"],
+  props: ["windowSize", "topologies", "shapediver", "paramsTabs", "details"],
   data() {
     return {
+      isOpen: 2,
       isScrollable: true,
       maxHeight: 200,
       currentTopology: {
@@ -369,7 +365,7 @@ export default {
   height: 100%;
 }
 .has-max-height-5 {
-  max-height: 500px;
+  max-height: 550px;
   min-height: 300px;
   .info-panel {
     -webkit-box-shadow: 0px -2px 5px -1px rgba(0, 0, 0, 0.3);
@@ -379,6 +375,10 @@ export default {
 .has-max-height-4 {
   max-height: 720px;
   min-height: 500px;
+}
+.has-max-height-6 {
+  max-height: 200px;
+  min-height: 100px;
 }
 .container .has-min-height {
   min-height: 100px;
@@ -462,6 +462,6 @@ export default {
   box-shadow: -5px 0px 5px -1px rgba(0, 0, 0, 0.3) !important;
 }
 .mobile-control-panel {
-  height: 450px;
+  height: 250px;
 }
 </style>

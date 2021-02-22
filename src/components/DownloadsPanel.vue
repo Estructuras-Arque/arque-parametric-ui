@@ -1,6 +1,6 @@
 <template lang="html">
   <div
-    class="column is-one-fifth-fullhd is-one-fifth-desktop control-panel model-info"
+    class="column is-one-fifth-fullhd is-one-quarter-desktop control-panel model-info"
   >
     <div class="container has-background-light tabs-component">
       <b-tabs
@@ -53,28 +53,7 @@ export default {
       isOpen: 2
     };
   },
-  methods: {
-    // splitDetailString(data, index) {
-    //   for (let i = 0; i < data.data.length; i++) {
-    //     var element = data.data[i];
-    //     // eslint-disable-next-line no-useless-escape
-    //     this.table[index].data.push(element.match(/[\d\.]+|\D+/g));
-    //   }
-    //   this.currentTopology.details = this.table;
-    // },
-    // organizeDetailsArray() {
-    //   for (let i = 0; i < this.orderedDetails.length; i++) {
-    //     var table = this.orderedDetails[i];
-    //     this.table.length = this.orderedDetails.length;
-    //     this.table[i] = new Object();
-    //     this.table[i].name = table.name;
-    //     this.table[i].id = table.id;
-    //     this.table[i].plugin = table.plugin;
-    //     this.table[i].data = [];
-    //     this.splitDetailString(table, i);
-    //   }
-    // }
-  }
+  methods: {}
 };
 </script>
 
