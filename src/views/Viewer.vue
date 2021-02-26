@@ -78,23 +78,14 @@ export default {
             "Cantilever",
             "Positive Height",
             "Negative Height",
-            "Tubes Diameter (mm)",
-            "Tubes Thickness (mm)"
-          ],
-          params: [],
-          displayed: true
-        },
-        {
-          name: "Customize",
-          icon: "ruler",
-          id: 1,
-          names: [
             "Width (m)  (X)",
             "Length (m)   (Y)",
             "System Height (m)",
             "Arch Height (m)",
             "Pich Height (m)",
-            "Minimum Radius (m)"
+            "Minimum Radius (m)",
+            "Tubes Diameter (mm)",
+            "Tubes Thickness (mm)"
           ],
           params: [],
           displayed: true

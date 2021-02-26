@@ -3,14 +3,24 @@
     class="column is-three-fifths-fullhd is-half-desktop has-background-white"
     :class="windowSize.isDesktop ? 'desktop-sd-viewer' : 'mobile-sd-viewer'"
   >
+    <b-loading
+      :is-full-page="true"
+      :active="geometryLoading"
+      :can-cancel="false"
+      class="geometry-loading"
+    >
+    </b-loading>
     <div class="has-background-light" id="sdv-container">
-      <b-loading
-        :is-full-page="true"
-        :active="geometryLoading"
-        :can-cancel="false"
-        class="geometry-loading"
-      >
-      </b-loading>
+      <b-button
+        tag="a"
+        href="mailto:spatial@estructurasarque.com"
+        class="modal-contact-button
+      mt-4"
+        label="Contact Us"
+        type="is-info"
+        size="is-small"
+        icon-left="mail-bulk"
+      />
     </div>
   </div>
 </template>
@@ -18,7 +28,13 @@
 <script>
 export default {
   name: "ShapediverViewer",
-  props: ["windowSize", "topologies", "currentTopology", "paramsTabs"],
+  props: [
+    "windowSize",
+    "topologies",
+    "currentTopology",
+    "paramsTabs",
+    "claims"
+  ],
   data() {
     return {
       geometryLoading: true,
@@ -137,6 +153,11 @@ export default {
 </script>
 
 <style lang="scss">
+.modal-contact-button {
+  position: absolute;
+  right: 50%;
+  z-index: 1000;
+}
 #sdv-container {
   width: 100% !important;
   height: 100% !important;

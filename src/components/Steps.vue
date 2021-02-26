@@ -27,7 +27,8 @@
           :columnsTitle="tableTitles"
           :tab-index="tabIndex"
       /></b-step-item>
-      <b-step-item
+
+      <!-- <b-step-item
         class="is-paddingless"
         step="1"
         label="Evaluating"
@@ -41,10 +42,11 @@
         >
         </b-loading>
         <user-details v-if="infoLoaded" :claims="claims" />
-      </b-step-item>
+      </b-step-item> -->
+
       <b-step-item
         class="is-paddingless"
-        step="2"
+        step="1"
         label="Files"
         icon="cart-arrow-down"
         :clickable="isStepsClickable"
@@ -88,12 +90,12 @@
 </template>
 <script>
 import DownloadsTable from "@/components/DownloadsTable.vue";
-import UserDetails from "@/components/UserDetails.vue";
+// import UserDetails from "@/components/UserDetails.vue";
 
 export default {
   name: "Steps",
   props: ["downloadParams", "exportSets", "tabIndex", "claims"],
-  components: { DownloadsTable, UserDetails },
+  components: { DownloadsTable },
   data() {
     return {
       hasNavigation: true,

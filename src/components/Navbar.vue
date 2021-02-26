@@ -19,9 +19,6 @@
         >
           Our Services
         </b-navbar-item>
-        <b-navbar-item @click="$router.push({ name: 'About' })">
-          Contact Us
-        </b-navbar-item>
       </b-navbar-dropdown>
       <b-navbar-item
         v-if="$router.currentRoute.fullPath != '/app'"
