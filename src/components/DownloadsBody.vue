@@ -5,6 +5,7 @@
         v-for="(info, index) in table"
         :key="index"
         class="is-size-7 has-text-weight-semibold"
+        :class="info != 'Available' ? 'has-text-dark' : 'has-text-primary'"
       >
         {{ info }}
       </td>
@@ -14,7 +15,7 @@
 
 <script>
 export default {
-  name: "TableBody",
+  name: "DownloadsBody",
   data() {
     return {
       tables: []
@@ -25,23 +26,30 @@ export default {
     detail: function(newData, oldData) {
       if (newData != oldData && oldData) {
         this.tables = [];
-        this.splitDetailString(newData);
+        this.organizeInTable(newData);
       } else {
         this.tables = [];
-        this.splitDetailString(oldData);
+        this.organizeInTable(oldData);
       }
     }
   },
   created() {
-    this.splitDetailString(this.detail);
+    this.organizeInTable(this.detail);
   },
   methods: {
-    splitDetailString(data) {
-      for (let i = 0; i < data.data.length; i++) {
-        var element = data.data[i];
+    organizeInTable(data) {
+      for (let i = 0; i < data.length; i++) {
+        var element = data[i];
         // eslint-disable-next-line no-useless-escape
-        this.tables.push(element.match(/[\d\.]+|\D+/g));
+        this.updateDownloadsList(element, "Available");
       }
+    },
+    updateDownloadsList(data, status) {
+      var info;
+      if (data == "ifc" || data == "dxf") {
+        info = data + " (calculus)";
+      } else info = data;
+      this.tables.push({ format: info, status: status });
     }
   }
 };

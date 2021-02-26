@@ -20,9 +20,12 @@
       <div class="card-content is-paddingless">
         <div class="content">
           <details-table
+            :tab-index="tabIndex"
+            :is-split="isSplit"
             :detail-tab="detailTab"
             :ordered-details="orderedDetails"
-            :current-topology="currentTopology"
+            :columns-title="columnsTitle"
+            :is-download="isDownload"
           />
         </div>
       </div>
@@ -38,9 +41,13 @@ export default {
     DetailsTable
   },
   data() {
-    return {};
+    return {
+      columnsTitle: ["Property", "Value", "Unit"],
+      isSplit: true,
+      isDownload: false
+    };
   },
-  props: ["currentTopology", "isOpen", "details"],
+  props: ["isOpen", "details", "tabIndex"],
   computed: {
     orderedDetails: function() {
       function compare(a, b) {
@@ -49,15 +56,6 @@ export default {
         return 0;
       }
       return this.details.slice(0).sort(compare);
-    },
-    columnsDetails: function() {
-      return this.orderedDetails.find(item => item.name == "Columns");
-    },
-    frameDetails: function() {
-      return this.orderedDetails.find(item => item.name == "Spatial Frame");
-    },
-    totalDetails: function() {
-      return this.orderedDetails.find(item => item.name == "Total");
     }
   }
 };

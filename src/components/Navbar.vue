@@ -1,7 +1,7 @@
 <template>
   <b-navbar>
     <template #brand>
-      <b-navbar-item href="http://estructurasarque.com">
+      <b-navbar-item @click="$router.push({ path: '/' })">
         <img
           src="http://estructurasarque.com/wp-content/uploads/2017/11/logo-web-arque.png"
           alt="Lightweight Metal Structures"
@@ -9,9 +9,6 @@
       </b-navbar-item>
     </template>
     <template #start>
-      <b-navbar-item href="/app">
-        CloudApp
-      </b-navbar-item>
       <b-navbar-item href="/documentation">
         Documentation
       </b-navbar-item>
@@ -26,16 +23,28 @@
           Contact Us
         </b-navbar-item>
       </b-navbar-dropdown>
+      <b-navbar-item
+        v-if="$router.currentRoute.fullPath != '/app'"
+        class="has-text-weight-semibold"
+        href="/app"
+      >
+        CloudApp
+      </b-navbar-item>
     </template>
 
     <template #end>
       <b-navbar-item tag="div">
         <div v-if="authenticated" class="buttons">
-          <a class="button is-link" @click="$router.push({ path: '/profile' })">
-            <strong>Profile</strong>
-          </a>
-          <a class="button is-info is-outlined" @click="logout">
-            <strong>Sign out</strong>
+          <button
+            class="button is-light rounded ml-2"
+            :class="$router.currentRoute.fullPath == '/app' ? '' : 'is-hovered'"
+            @click="$router.push({ name: 'Profile' })"
+          >
+            <b-icon icon="user-circle" size="is-large" type="is-primary">
+            </b-icon>
+          </button>
+          <a class="button is-light" @click="logout">
+            <b-icon icon="sign-out-alt" size="is-large" type="is-primary" />
           </a>
         </div>
       </b-navbar-item>
@@ -46,8 +55,17 @@
 <script>
 export default {
   name: "Navbar",
+  data() {
+    return {
+      window: {}
+    };
+  },
   props: ["authenticated"],
+
   methods: {
+    accessUserProfile() {
+      this.$router.push({ name: "Profile" });
+    },
     async logout() {
       await this.$auth.logout();
       await this.isAuthenticated();
@@ -62,5 +80,8 @@ export default {
 <style lang="scss">
 .navbar {
   height: 100% !important;
+}
+.rounded {
+  border-radius: 50% !important;
 }
 </style>

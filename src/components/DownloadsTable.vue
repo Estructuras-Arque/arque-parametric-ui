@@ -11,23 +11,23 @@
         </th>
       </tr>
     </thead>
-    <table-body v-if="detailTab" :detail="detailTab" />
+    <downloads-body v-if="detailTab" :detail="detailTab.choices" />
   </table>
 </template>
 
 <script>
-import TableBody from "../components/TableBody.vue";
+import DownloadsBody from "../components/DownloadsBody.vue";
 export default {
-  name: "DetailsTable",
+  name: "DownloadsTable",
   components: {
-    TableBody
+    DownloadsBody
   },
 
   data() {
     return {};
   },
 
-  props: ["detailTab", "columnsTitle", "isSplit", "isDownload", "tabIndex"]
+  props: ["detailTab", "columnsTitle"]
 };
 </script>
 

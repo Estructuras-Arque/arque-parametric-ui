@@ -17,41 +17,24 @@
       guard which will ensure that this page cannot be accessed until you have
       authenticated.
     </p>
-    <table class="ui table">
-      <thead>
-        <tr>
-          <th>Claim</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(claim, index) in claims" :key="index">
-          <td>{{ claim.claim }}</td>
-          <td :id="'claim-' + claim.claim">{{ claim.value }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <user-details :claims="claims" />
   </div>
 </template>
 
 <script>
 import Navbar from "@/components/Navbar.vue";
-
+import UserDetails from "@/components/UserDetails.vue";
 export default {
   name: "Profile",
-  props: ["authenticated"],
+  props: ["authenticated", "claims"],
   components: {
-    Navbar
+    Navbar,
+    UserDetails
   },
   data() {
-    return {
-      claims: []
-    };
+    return {};
   },
-  async created() {
-    this.claims = await Object.entries(
-      await this.$auth.getUser()
-    ).map(entry => ({ claim: entry[0], value: entry[1] }));
-  }
+
+  methods: {}
 };
 </script>

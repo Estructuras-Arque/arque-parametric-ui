@@ -20,207 +20,171 @@
               type="is-boxed"
               :vertical="!windowSize.isDesktop ? true : false"
             >
-              <b-tab-item
-                id="param-tab"
-                v-for="(paramTab, index) in paramsTabs"
-                :key="index"
-              >
-                <template #header>
-                  <b-icon :icon="paramTab.icon"></b-icon>
-                  <span
-                    class="subtitle is-size-7"
-                    v-if="windowSize.width > 1240"
-                  >
-                    {{ paramTab.name }}
-                  </span>
-                </template>
-                <simplebar
-                  data-simplebar-auto-hide="false"
-                  :class="windowSize.isDesktop ? 'max-height-6' : 'simplebar'"
+              <template v-for="(paramTab, index) in paramsTabs">
+                <b-tab-item
+                  v-if="paramTab.displayed == true"
+                  :icon="paramTab.icon"
+                  :key="index"
+                  :label="windowSize.width > 1240 ? paramTab.name : ''"
+                  id="param-tab"
                 >
-                  <div class="container" v-if="paramTab.name == 'Frame'">
-                    <b-field
-                      v-if="shapediver"
-                      class="mt-1 ml-3 has-text-grey"
-                      :message="topologyMessage"
-                      label="Topology"
-                      label-position="on-border"
-                    >
-                      <b-dropdown
-                        :disabled="!shapediver"
-                        focus
-                        :mobile-modal="
-                          windowSize.isDesktop == false ? true : false
-                        "
-                        class="pb-1 is-zindex"
-                        :scrollable="isScrollable"
-                        :max-height="maxHeight"
-                        v-model="currentTopology"
-                        aria-role="list"
+                  <simplebar
+                    data-simplebar-auto-hide="false"
+                    :class="windowSize.isDesktop ? 'max-height-6' : 'simplebar'"
+                  >
+                    <div class="container" v-if="paramTab.name == 'Frame'">
+                      <b-field
+                        v-if="shapediver"
+                        class="mt-1 ml-3 has-text-grey"
+                        :message="topologyMessage"
+                        label="Topology"
+                        label-position="on-border"
                       >
-                        <button
-                          class="button is-small is-info is-outlined"
-                          type="button"
-                          slot="trigger"
+                        <b-dropdown
+                          :disabled="!shapediver"
+                          focus
+                          :mobile-modal="
+                            windowSize.isDesktop == false ? true : false
+                          "
+                          class="pb-1 is-zindex"
+                          :scrollable="isScrollable"
+                          :max-height="maxHeight"
+                          v-model="currentTopology"
+                          aria-role="list"
                         >
-                          <template>
-                            <!-- <b-icon :icon="currentTopology.icon"></b-icon> -->
-                            <span
-                              ><strong>{{ currentTopology.name }}</strong></span
-                            >
-                          </template>
-                          <b-icon icon="angle-down"></b-icon>
-                        </button>
-                        <b-dropdown-item
-                          @click="changeTopology"
-                          v-for="(topo, index) in topologies"
-                          :id="topo.id"
-                          :key="index"
-                          :value="topo"
-                          aria-role="listitem"
-                        >
-                          <div class="media">
-                            <!-- <b-icon
+                          <button
+                            class="button is-small is-info is-outlined"
+                            type="button"
+                            slot="trigger"
+                          >
+                            <template>
+                              <!-- <b-icon :icon="currentTopology.icon"></b-icon> -->
+                              <span
+                                ><strong>{{
+                                  currentTopology.name
+                                }}</strong></span
+                              >
+                            </template>
+                            <b-icon icon="angle-down"></b-icon>
+                          </button>
+                          <b-dropdown-item
+                            @click="changeTopology"
+                            v-for="(topo, index) in topologies"
+                            :id="topo.id"
+                            :key="index"
+                            :value="topo"
+                            aria-role="listitem"
+                          >
+                            <div class="media">
+                              <!-- <b-icon
                                 class="media-left"
                                 :icon="topo.icon"
                               ></b-icon> -->
-                            <div class="media-content">
-                              <h3>
-                                <strong>{{ topo.name }}</strong>
-                              </h3>
+                              <div class="media-content">
+                                <h3>
+                                  <strong>{{ topo.name }}</strong>
+                                </h3>
+                              </div>
                             </div>
-                          </div>
-                        </b-dropdown-item>
-                      </b-dropdown>
-                      <p class="control">
-                        <button
-                          @click="clearStorage"
-                          class="button is-info is-outlined is-small"
-                        >
-                          <b-icon icon="sync-alt"></b-icon>
-                        </button>
-                      </p>
-                    </b-field>
-                    <b-field
-                      v-for="(param, index) in paramTab.params"
-                      :key="index"
-                      class="param-controllers"
-                      :label="param.name"
-                      grouped
-                    >
-                      <b-input
-                        @input="onParamChanged(param)"
-                        class="is-input-number my-1"
-                        size="is-small"
-                        v-if="param.type == 'Int' || param.type == 'Float'"
-                        v-model.number="param.value"
-                        maxlength="param.max"
-                        :step="param.type == 'Int' ? 1 : 0.1"
-                        type="number"
-                        lazy
-                      ></b-input>
-                      <b-slider
-                        type="is-info"
-                        size="is-small"
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Int' || param.type == 'Float'"
-                        :min="param.min"
-                        :max="param.max"
-                        v-model="param.value"
-                        :step="param.type == 'Int' ? 1 : 0.1"
-                        rounded
-                        ticks
-                        lazy
-                      ></b-slider>
-                      <b-switch
-                        type="is-info"
-                        size="is-small"
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Bool'"
-                        v-model="param.value"
-                      ></b-switch>
-                    </b-field>
-                  </div>
-                  <div class="container" v-else>
-                    <b-field
-                      v-for="(param, index) in paramTab.params"
-                      :key="index"
-                      class="param-controllers"
-                      :label="param.name"
-                      grouped
-                    >
-                      <b-input
-                        @input="onParamChanged(param)"
-                        class="is-input-number my-1"
-                        size="is-small"
-                        v-if="param.type == 'Int' || param.type == 'Float'"
-                        v-model.number="param.value"
-                        maxlength="param.max"
-                        :step="param.type == 'Int' ? 1 : 0.1"
-                        type="number"
-                        lazy
-                      ></b-input>
-                      <b-slider
-                        type="is-info"
-                        size="is-small"
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Int' || param.type == 'Float'"
-                        :min="param.min"
-                        :max="param.max"
-                        v-model="param.value"
-                        :step="param.type == 'Int' ? 1 : 0.1"
-                        rounded
-                        ticks
-                        lazy
-                      ></b-slider>
-                      <b-switch
-                        type="is-info"
-                        size="is-small"
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Bool'"
-                        v-model="param.value"
-                      ></b-switch>
-                    </b-field>
-                  </div>
-                </simplebar>
-              </b-tab-item>
+                          </b-dropdown-item>
+                        </b-dropdown>
+                        <p class="control">
+                          <button
+                            @click="clearStorage"
+                            class="button is-info is-outlined is-small"
+                          >
+                            <b-icon icon="sync-alt"></b-icon>
+                          </button>
+                        </p>
+                      </b-field>
+                      <b-field
+                        v-for="(param, index) in paramTab.params"
+                        :key="index"
+                        class="param-controllers"
+                        :label="param.name"
+                        grouped
+                      >
+                        <b-input
+                          @input="onParamChanged(param)"
+                          class="is-input-number my-1"
+                          size="is-small"
+                          v-if="param.type == 'Int' || param.type == 'Float'"
+                          v-model.number="param.value"
+                          maxlength="param.max"
+                          :step="param.type == 'Int' ? 1 : 0.1"
+                          type="number"
+                          lazy
+                        ></b-input>
+                        <b-slider
+                          type="is-info"
+                          size="is-small"
+                          @input="onParamChanged(param)"
+                          v-if="param.type == 'Int' || param.type == 'Float'"
+                          :min="param.min"
+                          :max="param.max"
+                          v-model="param.value"
+                          :step="param.type == 'Int' ? 1 : 0.1"
+                          rounded
+                          ticks
+                          lazy
+                        ></b-slider>
+                        <b-switch
+                          type="is-info"
+                          size="is-small"
+                          @input="onParamChanged(param)"
+                          v-if="param.type == 'Bool'"
+                          v-model="param.value"
+                        ></b-switch>
+                      </b-field>
+                    </div>
+                    <div class="container" v-else>
+                      <b-field
+                        v-for="(param, index) in paramTab.params"
+                        :key="index"
+                        class="param-controllers"
+                        :label="param.name"
+                        grouped
+                      >
+                        <b-input
+                          @input="onParamChanged(param)"
+                          class="is-input-number my-1"
+                          size="is-small"
+                          v-if="param.type == 'Int' || param.type == 'Float'"
+                          v-model.number="param.value"
+                          maxlength="param.max"
+                          :step="param.type == 'Int' ? 1 : 0.1"
+                          type="number"
+                          lazy
+                        ></b-input>
+                        <b-slider
+                          type="is-info"
+                          size="is-small"
+                          @input="onParamChanged(param)"
+                          v-if="param.type == 'Int' || param.type == 'Float'"
+                          :min="param.min"
+                          :max="param.max"
+                          v-model="param.value"
+                          :step="param.type == 'Int' ? 1 : 0.1"
+                          rounded
+                          ticks
+                          lazy
+                        ></b-slider>
+                        <b-switch
+                          type="is-info"
+                          size="is-small"
+                          @input="onParamChanged(param)"
+                          v-if="param.type == 'Bool'"
+                          v-model="param.value"
+                        ></b-switch>
+                      </b-field>
+                    </div>
+                  </simplebar>
+                </b-tab-item>
+              </template>
             </b-tabs>
           </div>
         </div>
       </b-tab-item>
-      <!-- <b-tab-item
-        v-if="!windowSize.isDesktop"
-        label="Structure Details"
-        icon="cubes"
-        ><div class="section is-paddingless">
-          <div class="container is-fluid is-paddingless">
-            <collapse
-              :details="details"
-              :current-topology="currentTopology"
-              :isOpen="isOpen"
-            />
-          </div>
-        </div>
-      </b-tab-item> -->
-      <!-- if mobile models tabs -->
-      <!-- <b-tab-item
-        v-if="!windowSize.isDesktop"
-        label="Downloads"
-        icon="cloud-download-alt"
-      >
-        <div class="section is-paddingless">
-          <div class="container is-fluid is-paddingless">
-            <div class="notification is-info">
-              What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
-              printing and typesetting industry Lorem Ipsum has been the
-              industry's standard dummy text ever since the 1500s when an
-              unknown printer took a galley of type and scrambled it to make a
-              type specimen book it has?
-            </div>
-          </div>
-        </div>
-      </b-tab-item> -->
-      <!-- endif mobile models tabs -->
 
       <!-- TODO -->
       <b-tab-item disabled label="Viewer" icon="eye">

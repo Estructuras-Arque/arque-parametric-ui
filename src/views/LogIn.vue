@@ -3,20 +3,7 @@
     <navbar :authenticated="authenticated" />
     <div class="hero is-small">
       <div class="hero-body">
-        <div class="columns container">
-          <div class="column has-va-center">
-            <b-button
-              type="is-info"
-              icon-left="angle-left"
-              @click="$router.push({ name: 'Home' })"
-              >Back</b-button
-            >
-            <div class="container"></div>
-          </div>
-          <div class="column">
-            <div id="osw-container"></div>
-          </div>
-        </div>
+        <div id="osw-container"></div>
       </div>
     </div>
   </div>
@@ -48,10 +35,12 @@ export default {
             arguments: []
           }
         ]
-      }
+      },
+      router: []
     };
   },
   async mounted() {
+    this.router = this.$router;
     this.$nextTick(function() {
       this.widget = new OktaSignIn({
         /**
@@ -62,15 +51,14 @@ export default {
         baseUrl: "https://dev-526462.okta.com",
         clientId: "0oa12fq53wsT6tep74x7",
         redirectUri: window.location.origin + "/implicit/callback",
-        logo: require("@/assets/logo.png"),
-        logoText: "logo text",
+        logo: require("@/assets/textLess.jpg"),
+        logoText: "Arque Spatial Systems",
         helpSupportNumber: "+34 623 196 662",
-        brandName: "Spaghetti Inc.",
+        brandName: "Arque Spatial Systems SL.",
         i18n: {
           en: {
-            "primaryauth.title": "Sign in to Vue & Company",
-            "primaryauth.username.placeholder":
-              "Your Computation Geometries Username"
+            "primaryauth.title": "Sign in to our Cloud Application",
+            "primaryauth.username.placeholder": "Username/Mail"
           }
         },
         idps: [
@@ -119,11 +107,11 @@ export default {
         customButtons: [
           {
             title: "Go Back",
-            className: "btn-customAuth",
+            className: "btn-customAuth has-background-info is-light",
             click: function() {
               // clicking on the button navigates to another page
-              window.location.href =
-                "https://dev-526462.okta.com/oauth2/v1/authorize?idp=0oa12u1ebmu4k5X4I4x7&client_id={clientId}&response_type={responseType}&response_mode={responseMode}&scope={scopes}&redirect_uri={redirectUri}&state={state}&nonce={nonce}";
+              window.location.href = window.location.origin;
+              console.log(window.location.origin);
             }
           }
         ],
@@ -176,11 +164,31 @@ export default {
     this.widget.remove();
   },
   methods: {
-    login() {
-      this.$auth.loginRedirect("/app");
+    backHome() {
+      this.$router.push({ name: "Home" });
     }
   }
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+#okta-sign-in .default-custom-button {
+  border: 1px solid rgb(182, 181, 181);
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-right-color: whitesmoke(214, 0, 26);
+  border-right-style: solid;
+  border-right-width: 1px;
+  border-bottom-color: whitesmoke(214, 0, 26);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-left-color: whitesmoke(214, 0, 26);
+  border-left-style: solid;
+  border-left-width: 1px;
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+}
+</style>

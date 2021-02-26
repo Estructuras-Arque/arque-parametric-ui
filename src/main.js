@@ -52,7 +52,14 @@ import {
     faCameraRetro,
     faCubes,
     faCube,
-    faTable
+    faTable,
+    faUserAlt,
+    faUserCircle,
+    faSignOutAlt,
+    faDiagnoses,
+    faArrowAltCircleRight,
+    faQuestion,
+    faCartArrowDown
 } from "@fortawesome/free-solid-svg-icons";
 import {} from "@fortawesome/free-regular-svg-icons";
 import {
@@ -112,7 +119,14 @@ library.add(
     faCameraRetro,
     faCubes,
     faCube,
-    faTable
+    faTable,
+    faUserAlt,
+    faUserCircle,
+    faSignOutAlt,
+    faDiagnoses,
+    faArrowAltCircleRight,
+    faQuestion,
+    faCartArrowDown
 );
 Vue.component("vue-fontawesome", FontAwesomeIcon);
 import Buefy from "buefy";

@@ -1,7 +1,7 @@
 <template lang="html">
   <div
     class="column is-three-fifths-fullhd is-half-desktop has-background-white"
-    :class="windowSize.width > 1024 ? 'desktop-sd-viewer' : 'mobile-sd-viewer'"
+    :class="windowSize.isDesktop ? 'desktop-sd-viewer' : 'mobile-sd-viewer'"
   >
     <div class="has-background-light" id="sdv-container">
       <b-loading
@@ -160,12 +160,12 @@ export default {
 }
 .mobile-sd-viewer {
   width: 100% !important;
-  height: 500px !important;
+  height: 50vh;
   background-color: white;
 }
 .desktop-sd-viewer {
   width: 100%;
-  height: calc(100vh - 53px) !important;
+  max-height: calc(100vh - 53px) !important;
   background-color: white;
 }
 </style>

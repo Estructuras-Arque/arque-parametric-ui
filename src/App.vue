@@ -3,6 +3,7 @@
     <!-- <window-size /> -->
     <!-- <transition name="sliding"> -->
     <router-view
+      :claims="claims"
       :is-authenticated="isAuthenticated"
       :window-size="windowSize"
       :authenticated="authenticated"
@@ -23,7 +24,8 @@ export default {
         isDesktop: null
       },
       authenticated: false,
-      auth: null
+      auth: null,
+      claims: []
     };
   },
   created() {
@@ -45,6 +47,7 @@ export default {
     window.removeEventListener("resize", this.getWindowHeight);
     window.removeEventListener("resize", this.getWindowType);
   },
+
   watch: {
     // Everytime the route changes, check for auth status
     $route: "isAuthenticated"
@@ -52,6 +55,7 @@ export default {
   methods: {
     async isAuthenticated() {
       this.authenticated = await this.$auth.isAuthenticated();
+      await this.getClaims();
     },
     async logout() {
       await this.$auth.logout();
@@ -59,6 +63,11 @@ export default {
 
       // Navigate back to home
       this.$router.push({ path: "/" });
+    },
+    async getClaims() {
+      this.claims = await Object.entries(
+        await this.$auth.getUser()
+      ).map(entry => ({ claim: entry[0], value: entry[1] }));
     },
     login() {
       this.$auth.loginRedirect("/app");
@@ -91,6 +100,7 @@ export default {
 
 // Set your colors
 $primary: #cc7a00;
+$success: #dfc8a5;
 $primary-invert: findColorInvert($primary);
 $twitter: #4099ff;
 $twitter-invert: findColorInvert($twitter);

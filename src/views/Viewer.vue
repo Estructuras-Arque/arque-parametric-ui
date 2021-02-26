@@ -40,11 +40,12 @@
         <!-- model downloads -->
 
         <downloads-panel
+          :claims="claims"
           :details="details"
           :shapediver="shapediver"
-          :params-tabs="paramsTabs"
+          :downloads-tab="paramsTabs[downloadsId].params[0]"
           :window-size="windowSize"
-          :currentTopology="currentTopology"
+          :current-topology="currentTopology"
         />
       </div>
     </section>
@@ -59,7 +60,7 @@ import Navbar from "../components/Navbar.vue";
 
 export default {
   name: "Viewer",
-  props: ["windowSize", "authenticated"],
+  props: ["windowSize", "authenticated", "claims"],
   components: {
     ControlPanel,
     ShapediverViewer,
@@ -72,6 +73,7 @@ export default {
         {
           name: "Frame",
           icon: "draw-polygon",
+          id: 0,
           names: [
             "Cantilever",
             "Positive Height",
@@ -79,11 +81,13 @@ export default {
             "Tubes Diameter (mm)",
             "Tubes Thickness (mm)"
           ],
-          params: []
+          params: [],
+          displayed: true
         },
         {
           name: "Customize",
           icon: "ruler",
+          id: 1,
           names: [
             "Width (m)  (X)",
             "Length (m)   (Y)",
@@ -92,11 +96,13 @@ export default {
             "Pich Height (m)",
             "Minimum Radius (m)"
           ],
-          params: []
+          params: [],
+          displayed: true
         },
         {
           name: "Subdivisions",
           icon: "border-all",
+          id: 2,
           names: [
             "N⍛ Divisions  (X)",
             "N⍛ Divisions  (Y)",
@@ -104,24 +110,45 @@ export default {
             "N⍛ Divisions",
             "Threshold"
           ],
-          params: []
+          params: [],
+          displayed: true
         },
         {
           name: "Columns",
           icon: "grip-lines-vertical",
+          id: 3,
           names: [
             "N⍛ Columns (X)",
             "N⍛ Columns (Y)",
             "Intermediate Columns",
             "Columns Diameter (mm)",
             "Columns Thickness (mm)",
+            "Columns Height (m)",
             "Interior Columns",
             "N⍛ Columns",
             "N⍛ Intermediate Columns"
           ],
-          params: []
+          params: [],
+          displayed: true
+        },
+        {
+          name: "Downloads",
+          icon: "cloud-download-alt",
+          id: 4,
+          names: ["Export Type"],
+          params: [],
+          displayed: false
+        },
+        {
+          name: "User Details",
+          icon: "user-circle",
+          id: 4,
+          names: ["Export Type"],
+          params: [],
+          displayed: false
         }
       ],
+      downloadsId: 0,
       shapediver: null,
       geometryReady: false,
       showRight: true,
@@ -212,17 +239,22 @@ export default {
       updated: false
     };
   },
-
+  mounted() {
+    this.getDownloadsId();
+  },
   methods: {
+    getDownloadsId() {
+      var downloads = this.paramsTabs.filter(
+        element => element.name == "Downloads"
+      );
+      this.downloadsId = downloads[0].id;
+    },
     onShapediverReady(value) {
       this.shapediver = value;
       if (this.shapediver != null) {
         this.isLoading = false;
       }
     },
-    // onDetailsReady(value) {
-    //   this.details = value;
-    // },
     onTopologyChanged(value) {
       value.loaded = true;
       this.currentTopology = value;
@@ -237,7 +269,6 @@ export default {
         {},
         this.currentTopology.id
       ).data;
-      // console.log("connected");
       // filter details by model id
       this.details = allDetails.filter(detail => {
         return detail.plugin == this.currentTopology.id;

@@ -4,6 +4,7 @@
   >
     <div class="container has-background-light tabs-component">
       <b-tabs
+        v-model="activeTab"
         class="has-background-white tabs-component"
         type="is-toggle"
         size="is-small"
@@ -14,8 +15,8 @@
             <simplebar data-simple-bar-auto-hide="false" class="simplebar">
               <div class="container is-paddingless">
                 <collapse
+                  :tab-index="activeTab"
                   :details="details"
-                  :current-topology="currentTopology"
                   :isOpen="isOpen"
                 />
               </div>
@@ -25,13 +26,14 @@
         <b-tab-item label="Downloads" icon="cloud-download-alt">
           <div class="section is-paddingless">
             <div class="container is-fluid is-paddingless">
-              <p class="notification is-warning">
-                What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
-                printing and typesetting industry Lorem Ipsum has been the
-                industry's standard dummy text ever since the 1500s when an
-                unknown printer took a galley of type and scrambled it to make a
-                type specimen book it has?
-              </p>
+              <steps
+                :claims="claims"
+                :tab-index="activeTab"
+                :download-params="downloadsTab"
+                @step-changed="stepChanged"
+                @step-ready="stepReady"
+                :export-sets="exportSets"
+              />
             </div>
           </div>
         </b-tab-item>
@@ -44,16 +46,47 @@
 import simplebar from "simplebar-vue";
 import "simplebar/dist/simplebar.min.css";
 import Collapse from "@/components/Collapse.vue";
+import Steps from "@/components/Steps.vue";
 export default {
   name: "DownloadsPanel",
-  props: ["windowSize", "shapediver", "currentTopology", "details"],
-  components: { simplebar, Collapse },
+  props: [
+    "windowSize",
+    "shapediver",
+    "currentTopology",
+    "details",
+    "downloadsTab",
+    "claims"
+  ],
+  components: { simplebar, Collapse, Steps },
   data() {
     return {
-      isOpen: 2
+      activeTab: 0,
+      isLoad: false,
+      exportSets: [],
+      isOpen: 2,
+      activeStep: 0
     };
   },
-  methods: {}
+
+  methods: {
+    stepChanged(value) {
+      this.activeStep = value;
+    },
+    stepReady(value) {
+      this.activeStep = value;
+      this.requestDownloads();
+    },
+    requestDownloads() {
+      var plugin = this.currentTopology.id;
+      setTimeout(() => {
+        this.isLoad = false;
+        var exportSettings = this.shapediver.exports.get().data;
+        this.exportSets = exportSettings.filter(function(param) {
+          return param.plugin.includes(plugin);
+        });
+      }, 1000);
+    }
+  }
 };
 </script>
 
