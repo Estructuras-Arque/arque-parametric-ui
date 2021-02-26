@@ -1,191 +1,187 @@
 /* eslint-disable no-unused-vars */
 <template>
-  <div id="control-panel" class="column has-background-light">
+  <div
+    class="column is-one-fifth-fullhd is-one-quarter-desktop has-background-light control-panel"
+  >
     <b-tabs
-      id="panel-tabs"
       class="has-background-white tabs-component"
       type="is-toggle"
       size="is-small"
       expanded
+      animation="slide-next"
     >
       <b-tab-item label="Parameters" icon="tools">
-        <div class="section is-paddingless is-fullheight">
-          <div
-            class="container is-fluid is-paddingless is-fullheight has-background-light"
-          >
+        <div class="section is-paddingless has-parent-height">
+          <div class="container is-fluid is-paddingless has-background-light">
             <b-tabs
               class="params-tabs"
-              :position="windowSize.width < 1024 ? 'is-right' : ''"
+              :position="!windowSize.isDesktop ? 'is-right' : ''"
               size="is-small"
               type="is-boxed"
-              :vertical="windowSize.width < 1024 ? true : false"
+              :vertical="!windowSize.isDesktop ? true : false"
             >
-              <b-tab-item
-                id="param-tab"
-                v-for="(paramTab, index) in paramsTabs"
-                :key="index"
-              >
-                <template #header>
-                  <b-icon :icon="paramTab.icon"></b-icon>
-                  <span v-if="windowSize.isDesktop"> {{ paramTab.name }} </span>
-                </template>
-                <simplebar
-                  data-simplebar-auto-hide="false"
-                  :class="
-                    windowSize.width < 1024 ? 'has-max-height' : 'simplebar'
-                  "
+              <template v-for="(paramTab, index) in paramsTabs">
+                <b-tab-item
+                  v-if="paramTab.displayed == true"
+                  :icon="paramTab.icon"
+                  :key="index"
+                  :label="windowSize.width > 1240 ? paramTab.name : ''"
+                  id="param-tab"
                 >
-                  <div class="container" v-if="paramTab.name == 'Frame'">
-                    <b-field
-                      class="mt-1 ml-3 has-text-grey"
-                      :message="topologyMessage"
-                      label="Topology"
-                      label-position="on-border"
-                    >
-                      <b-dropdown
-                        :disabled="!shapediver"
-                        focus
-                        :mobile-modal="
-                          windowSize.isDesktop == false ? true : false
-                        "
-                        class="pb-1 is-zindex"
-                        :scrollable="isScrollable"
-                        :max-height="maxHeight"
-                        v-model="currentTopology"
-                        aria-role="list"
+                  <simplebar
+                    data-simplebar-auto-hide="false"
+                    :class="windowSize.isDesktop ? 'max-height-6' : 'simplebar'"
+                  >
+                    <div class="container" v-if="paramTab.name == 'Frame'">
+                      <b-field
+                        v-if="shapediver"
+                        class="mt-1 ml-3 has-text-grey"
+                        :message="topologyMessage"
+                        label="Topology"
+                        label-position="on-border"
                       >
-                        <button
-                          class="button is-small is-info is-outlined"
-                          type="button"
-                          slot="trigger"
+                        <b-dropdown
+                          :disabled="!shapediver"
+                          focus
+                          :mobile-modal="
+                            windowSize.isDesktop == false ? true : false
+                          "
+                          class="pb-1 is-zindex"
+                          :scrollable="isScrollable"
+                          :max-height="maxHeight"
+                          v-model="currentTopology"
+                          aria-role="list"
                         >
-                          <template>
-                            <!-- <b-icon :icon="currentTopology.icon"></b-icon> -->
-                            <span
-                              ><strong>{{ currentTopology.name }}</strong></span
-                            >
-                          </template>
-                          <b-icon icon="angle-down"></b-icon>
-                        </button>
-                        <b-dropdown-item
-                          @click="changeTopology"
-                          v-for="(topo, index) in topologies"
-                          :id="topo.id"
-                          :key="index"
-                          :value="topo"
-                          aria-role="listitem"
-                        >
-                          <div class="media">
-                            <!-- <b-icon
+                          <button
+                            class="button is-small is-info is-outlined"
+                            type="button"
+                            slot="trigger"
+                          >
+                            <template>
+                              <!-- <b-icon :icon="currentTopology.icon"></b-icon> -->
+                              <span
+                                ><strong>{{
+                                  currentTopology.name
+                                }}</strong></span
+                              >
+                            </template>
+                            <b-icon icon="angle-down"></b-icon>
+                          </button>
+                          <b-dropdown-item
+                            @click="changeTopology"
+                            v-for="(topo, index) in topologies"
+                            :id="topo.id"
+                            :key="index"
+                            :value="topo"
+                            aria-role="listitem"
+                          >
+                            <div class="media">
+                              <!-- <b-icon
                                 class="media-left"
                                 :icon="topo.icon"
                               ></b-icon> -->
-                            <div class="media-content">
-                              <h3>
-                                <strong>{{ topo.name }}</strong>
-                              </h3>
+                              <div class="media-content">
+                                <h3>
+                                  <strong>{{ topo.name }}</strong>
+                                </h3>
+                              </div>
                             </div>
-                          </div>
-                        </b-dropdown-item>
-                      </b-dropdown>
-                      <p class="control">
-                        <button
-                          @click="clearStorage"
-                          class="button is-info is-outlined is-small"
-                        >
-                          <b-icon icon="sync-alt"></b-icon>
-                        </button>
-                      </p>
-                    </b-field>
-                    <br />
-                    <b-field
-                      v-for="(param, index) in paramTab.params"
-                      :key="index"
-                      class="param-controllers"
-                    >
-                      <b-slider
-                        type="is-info"
-                        size="is-small"
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Int' || param.type == 'Float'"
-                        :min="param.min"
-                        :max="param.max"
-                        v-model="param.value"
-                        ticks
-                      ></b-slider>
-                      <b-switch
-                        type="is-info"
-                        size="is-small"
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Bool'"
-                        v-model="param.value"
-                        >{{ param.value }}</b-switch
+                          </b-dropdown-item>
+                        </b-dropdown>
+                        <p class="control">
+                          <button
+                            @click="clearStorage"
+                            class="button is-info is-outlined is-small"
+                          >
+                            <b-icon icon="sync-alt"></b-icon>
+                          </button>
+                        </p>
+                      </b-field>
+                      <b-field
+                        v-for="(param, index) in paramTab.params"
+                        :key="index"
+                        class="param-controllers"
+                        :label="param.name"
+                        grouped
                       >
-                    </b-field>
-                  </div>
-                  <div class="container" v-else>
-                    <b-field
-                      v-for="(param, index) in paramTab.params"
-                      :key="index"
-                      class="param-controllers"
-                      :label="param.name"
-                    >
-                      <b-slider
-                        type="is-info"
-                        size="is-small"
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Int' || param.type == 'Float'"
-                        :min="param.min"
-                        :max="param.max"
-                        v-model="param.value"
-                      ></b-slider>
-                      <b-switch
-                        type="is-info"
-                        size="is-small"
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Bool'"
-                        v-model="param.value"
-                        >{{ param.value }}</b-switch
+                        <b-input
+                          @input="onParamChanged(param)"
+                          class="is-input-number my-1"
+                          size="is-small"
+                          v-if="param.type == 'Int' || param.type == 'Float'"
+                          v-model.number="param.value"
+                          maxlength="param.max"
+                          :step="param.type == 'Int' ? 1 : 0.1"
+                          type="number"
+                          lazy
+                        ></b-input>
+                        <b-slider
+                          type="is-info"
+                          size="is-small"
+                          @input="onParamChanged(param)"
+                          v-if="param.type == 'Int' || param.type == 'Float'"
+                          :min="param.min"
+                          :max="param.max"
+                          v-model="param.value"
+                          :step="param.type == 'Int' ? 1 : 0.1"
+                          rounded
+                          ticks
+                          lazy
+                        ></b-slider>
+                        <b-switch
+                          type="is-info"
+                          size="is-small"
+                          @input="onParamChanged(param)"
+                          v-if="param.type == 'Bool'"
+                          v-model="param.value"
+                        ></b-switch>
+                      </b-field>
+                    </div>
+                    <div class="container" v-else>
+                      <b-field
+                        v-for="(param, index) in paramTab.params"
+                        :key="index"
+                        class="param-controllers"
+                        :label="param.name"
+                        grouped
                       >
-                    </b-field>
-                  </div>
-                </simplebar>
-              </b-tab-item>
+                        <b-input
+                          @input="onParamChanged(param)"
+                          class="is-input-number my-1"
+                          size="is-small"
+                          v-if="param.type == 'Int' || param.type == 'Float'"
+                          v-model.number="param.value"
+                          maxlength="param.max"
+                          :step="param.type == 'Int' ? 1 : 0.1"
+                          type="number"
+                          lazy
+                        ></b-input>
+                        <b-slider
+                          type="is-info"
+                          size="is-small"
+                          @input="onParamChanged(param)"
+                          v-if="param.type == 'Int' || param.type == 'Float'"
+                          :min="param.min"
+                          :max="param.max"
+                          v-model="param.value"
+                          :step="param.type == 'Int' ? 1 : 0.1"
+                          rounded
+                          ticks
+                          lazy
+                        ></b-slider>
+                        <b-switch
+                          type="is-info"
+                          size="is-small"
+                          @input="onParamChanged(param)"
+                          v-if="param.type == 'Bool'"
+                          v-model="param.value"
+                        ></b-switch>
+                      </b-field>
+                    </div>
+                  </simplebar>
+                </b-tab-item>
+              </template>
             </b-tabs>
-          </div>
-        </div>
-      </b-tab-item>
-      <b-tab-item
-        v-if="!windowSize.isDesktop"
-        label="Structure Details"
-        icon="cubes"
-        ><div class="section is-paddingless">
-          <div class="container is-fluid is-paddingless">
-            <div class="notification is-warning">
-              What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
-              printing and typesetting industry Lorem Ipsum has been the
-              industry's standard dummy text ever since the 1500s when an
-              unknown printer took a galley of type and scrambled it to make a
-              type specimen book it has?
-            </div>
-          </div>
-        </div>
-      </b-tab-item>
-
-      <b-tab-item
-        v-if="!windowSize.isDesktop"
-        label="Downloads"
-        icon="cloud-download-alt"
-      >
-        <div class="section is-paddingless">
-          <div class="container is-fluid is-paddingless">
-            <div class="notification is-info">
-              What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
-              printing and typesetting industry Lorem Ipsum has been the
-              industry's standard dummy text ever since the 1500s when an
-              unknown printer took a galley of type and scrambled it to make a
-              type specimen book it has?
-            </div>
           </div>
         </div>
       </b-tab-item>
@@ -256,11 +252,10 @@ export default {
   components: {
     simplebar
   },
-  props: ["windowSize", "topologies", "shapediver", "paramsTabs"],
+  props: ["windowSize", "topologies", "shapediver", "paramsTabs", "details"],
   data() {
     return {
-      notMobile: false,
-      tHeight: false,
+      isOpen: 2,
       isScrollable: true,
       maxHeight: 200,
       currentTopology: {
@@ -270,12 +265,11 @@ export default {
         assets: [],
         paths: [],
         params: [],
+        details: [],
         ticket: null,
         icon: null
       },
       topologyMessage: null,
-      parametersTab: 1,
-      modifiersTab: 0,
       collapses: [
         {
           title: "Dimensions",
@@ -292,6 +286,7 @@ export default {
       ]
     };
   },
+
   mounted() {
     this.getTopologiesMessage();
     this.currentTopology = this.topologies[0];
@@ -303,11 +298,11 @@ export default {
       location.reload();
     },
     changeTopology() {
-      this.$emit("topology-ready", this.currentTopology);
+      this.$emit("topology-changed", this.currentTopology);
     },
     onParamChanged(param) {
       this.$emit("param-changed", param);
-      console.log(param.value);
+      // console.log(param.value);
     },
     getTopologiesMessage() {
       var count = "(" + this.topologies.length.toString() + ")";
@@ -320,23 +315,44 @@ export default {
 
 <style lang="scss">
 .param-controllers {
-  margin-right: 2rem;
-  margin-left: 2rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
+  .label {
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  .is-input-number {
+    width: 80px;
+  }
 }
 .is-fullheight {
   height: 100%;
 }
-.has-max-height {
-  max-height: 500px;
+.has-max-height-5 {
+  max-height: 550px;
   min-height: 300px;
+  .info-panel {
+    -webkit-box-shadow: 0px -2px 5px -1px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px -5px 5px -1px rgba(0, 0, 0, 0.3);
+  }
+}
+.has-max-height-4 {
+  max-height: 720px;
+  min-height: 500px;
+}
+.has-max-height-6 {
+  max-height: 200px;
+  min-height: 100px;
 }
 .container .has-min-height {
   min-height: 100px;
 }
+
 .simplebar {
   width: 100%;
   height: 100%;
 }
+
 .params-tabs {
   width: 100%;
   height: 100%;
@@ -358,6 +374,7 @@ export default {
     }
   }
 }
+
 .tabs-component {
   height: 100% !important;
   box-shadow: inset 1px 1px 10px 6px rgba(0, 0, 0, 0.08);
@@ -372,7 +389,8 @@ export default {
     }
   }
 }
-#control-panel {
+
+.control-panel {
   ::-webkit-scrollbar {
     height: 6px;
   }
@@ -395,11 +413,19 @@ export default {
     background-color: rgba(74, 74, 74, 0.8);
   }
 }
-#control-panel {
+
+.control-panel {
   padding: 0.75rem !important;
   z-index: 50;
   overflow: hidden;
   -webkit-box-shadow: 5px 0px 5px -1px rgba(0, 0, 0, 0.3);
   box-shadow: 5px 0px 5px -1px rgba(0, 0, 0, 0.3);
+}
+.control-panel.model-info {
+  -webkit-box-shadow: -5px 0px 5px -1px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: -5px 0px 5px -1px rgba(0, 0, 0, 0.3) !important;
+}
+.mobile-control-panel {
+  height: 250px;
 }
 </style>

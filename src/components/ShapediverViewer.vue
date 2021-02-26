@@ -1,12 +1,7 @@
-/* eslint-disable no-unused-vars */ /* eslint-disable no-unused-vars */
-<template>
+<template lang="html">
   <div
-    class="column has-background-white viewport-container"
-    :class="
-      windowSize.width > 1024
-        ? 'is-half-desktop is-three-fifths-widescreen is-three-fifths-fullhd desktop-sd-viewer'
-        : 'mobile-sd-viewer'
-    "
+    class="column is-three-fifths-fullhd is-half-desktop has-background-white"
+    :class="windowSize.isDesktop ? 'desktop-sd-viewer' : 'mobile-sd-viewer'"
   >
     <div class="has-background-light" id="sdv-container">
       <b-loading
@@ -49,6 +44,9 @@ export default {
       this.initApp();
     }
   },
+  // beforeDestroy() {
+  //   this.shapediver.viewports.destroy();
+  // },
   methods: {
     async initApp() {
       // Load the viewer without a ticket, and register separate communication plugins for each model ticket.
@@ -70,7 +68,7 @@ export default {
         await this.initModel(this.topologies[i].ticket, this.topologies[i].id);
       }
       this.allParams = this.shapediver.parameters.get().data;
-      await this.getPluginsParams();
+      await this.getPluginParams();
       await this.showPluginContents(
         this.currentTopology.id,
         this.currentTopology.loaded
@@ -86,7 +84,7 @@ export default {
       });
     },
 
-    async getPluginsParams() {
+    async getPluginParams() {
       this.topologies.forEach(topology => {
         topology.params = this.allParams.filter(
           param => param.plugin == topology.id
@@ -98,8 +96,7 @@ export default {
     async showPluginContents(pluginId, bShow) {
       // load the geometry the first time a specific model needs to be displayed
       await this.shapediver.plugins.refreshPluginAsync(pluginId);
-      // console.log(this.shapediver.plugins.refreshPluginAsync(pluginId));
-      // this.loadedGeometries[pluginId] = true;
+
       var assets = this.shapediver.scene.get(null, pluginId).data;
       var paths = [];
       for (let i = 0; i < assets.length; i++) {
@@ -111,16 +108,15 @@ export default {
       if (bShow) {
         this.shapediver.scene.toggleGeometry(paths, []);
         this.geometryLoading = false;
-        console.log("on load", this.currentTopology.params);
 
         for (let i = 0; i < this.paramsTabs.length; i++) {
-          var paramTab = this.paramsTabs[i];
-          this.filterParamTabs(paramTab.name);
+          this.filterParamTabs(this.paramsTabs[i].name);
         }
       } else {
         this.shapediver.scene.toggleGeometry([], paths);
       }
     },
+
     filterParamTabs(name) {
       var currentParams = this.currentTopology.params;
 
@@ -128,21 +124,13 @@ export default {
 
       var frameParamNames = tab.names;
 
-      console.log(frameParamNames, tab);
+      // console.log(frameParamNames, tab);
 
-      var tabParams = currentParams.filter(function(param) {
+      tab.params = currentParams.filter(function(param) {
         return frameParamNames.includes(param.name.trim());
       });
 
-      console.log(tabParams);
-
-      currentParams = currentParams.filter(function(param) {
-        return !frameParamNames.includes(param.name.trim())
-          ? true
-          : currentParams.splice(currentParams.indexOf(param), 1) && false;
-      });
-      tab.params = tabParams;
-      console.log("after load", currentParams);
+      // console.log("after load", currentParams);
     }
   }
 };
@@ -171,13 +159,13 @@ export default {
   height: 100%;
 }
 .mobile-sd-viewer {
-  width: 100%;
-  height: 720px !important;
+  width: 100% !important;
+  height: 50vh;
   background-color: white;
 }
 .desktop-sd-viewer {
   width: 100%;
-  height: calc(100vh - 53px) !important;
+  max-height: calc(100vh - 53px) !important;
   background-color: white;
 }
 </style>

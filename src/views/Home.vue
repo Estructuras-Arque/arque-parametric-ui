@@ -3,45 +3,7 @@
     <section class="hero is-fullheight is-bold is-light">
       <!-- Hero head: will stick at the top -->
       <div class="hero-head">
-        <b-navbar>
-          <template slot="brand">
-            <b-navbar-item href="http://estructurasarque.com">
-              <img
-                src="http://estructurasarque.com/wp-content/uploads/2017/11/logo-web-arque.png"
-                alt="Lightweight UI components for Vue.js based on Bulma"
-              />
-            </b-navbar-item>
-          </template>
-          <template slot="start">
-            <b-navbar-item href="#">
-              Documentation
-            </b-navbar-item>
-            <b-navbar-dropdown collapsible label="About Us">
-              <b-navbar-item href="/about">The team</b-navbar-item>
-              <b-navbar-item
-                href="http://estructurasarque.com/arque-spatial-systems/"
-              >
-                Our Services
-              </b-navbar-item>
-              <b-navbar-item @click="$router.push({ name: 'About' })">
-                Contact Us
-              </b-navbar-item>
-            </b-navbar-dropdown>
-          </template>
-
-          <template slot="end" v-if="authIsActive == true">
-            <b-navbar-item tag="div">
-              <div class="buttons">
-                <a class="button is-ghost">
-                  <strong>Sign up</strong>
-                </a>
-                <a class="button is-info is-outlined">
-                  Log in
-                </a>
-              </div>
-            </b-navbar-item>
-          </template>
-        </b-navbar>
+        <navbar :authenticated="authenticated" />
       </div>
 
       <!-- Hero content: will be in the middle -->
@@ -78,10 +40,9 @@
               position="is-bottom"
               :active="true"
             >
-              <b-button
-                v-if="showTitle"
-                @click="$router.push({ name: 'Viewer' })"
-                >Start</b-button
+              <b-button v-if="showTitle" @click="$router.push({ path: '/app' })"
+                ><p v-if="authenticated">Start</p>
+                <p v-else>Sign In</p></b-button
               ></b-tooltip
             ></transition
           >
@@ -108,10 +69,10 @@
 // @ is an alias to /src
 import IconOrange from "@/components/animatedicons/IconSpatialOrange.vue";
 import IconBlack from "@/components/animatedicons/IconSpatialBlack.vue";
-
+import Navbar from "@/components/Navbar.vue";
 export default {
   name: "Home",
-  props: ["isDesktop"],
+  props: ["isDesktop", "authenticated"],
   data() {
     return {
       authIsActive: false,
@@ -123,7 +84,8 @@ export default {
   },
   components: {
     IconOrange,
-    IconBlack
+    IconBlack,
+    Navbar
   },
   created() {
     this.LoadLogo();
@@ -131,6 +93,9 @@ export default {
     this.LoadBackB();
   },
   methods: {
+    login() {
+      this.$auth.loginRedirect("/app");
+    },
     LoadLogo() {
       setTimeout(this.ShowLogo, 1000);
     },

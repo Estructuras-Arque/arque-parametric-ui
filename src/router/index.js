@@ -2,19 +2,19 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import LogIn from "../views/LogIn.vue";
+import Login from "../views/Login.vue";
 import Viewer from "../views/Viewer.vue";
+import Profile from "../views/Profile.vue";
 import About from "../views/About.vue";
+import Documentation from "../views/Documentation.vue";
 
 import Auth from "@okta/okta-vue";
 
-const redirectUri = process.env.VUE_APP_OKTA_REDIRECT_URI;
-
 Vue.use(Auth, {
     issuer: "https://dev-526462.okta.com/oauth2/default",
-    clientId: "0oap9gpp9ld7EBWaB4x6",
-    redirectUri,
-    scopes: ["openid", "profile", "email", "phone", "address"],
+    clientId: "0oa12fq53wsT6tep74x7",
+    redirectUri: window.location.origin + "/implicit/callback",
+    scopes: ["openid", "profile", "email"],
     pkce: true
 });
 
@@ -25,8 +25,16 @@ const routes = [{
     },
     {
         path: "/login",
-        name: "LogIn",
-        component: LogIn
+        name: "Login",
+        component: Login
+    },
+    {
+        path: "/profile",
+        name: "Profile",
+        component: Profile,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: "/implicit/callback",
@@ -35,18 +43,23 @@ const routes = [{
     {
         path: "/app",
         name: "Viewer",
-        component: Viewer
-            // meta: {
-            //   requiresAuth: true
-            // }
+        component: Viewer,
+        meta: {
+            requiresAuth: true
+        }
     },
     {
         path: "/about",
         name: "About",
         component: About
-            // meta: {
-            //   requiresAuth: true
-            // }
+    },
+    {
+        path: "/documentation",
+        name: "Documentation",
+        component: Documentation,
+        meta: {
+            requiresAuth: true
+        }
     }
 ];
 
@@ -57,6 +70,18 @@ const router = new VueRouter({
 });
 Vue.use(VueRouter);
 
-router.beforeEach(Vue.prototype.$auth.authRedirectGuard());
+const onAuthRequired = async(from, to, next) => {
+    if (
+        from.matched.some(record => record.meta.requiresAuth) &&
+        !(await Vue.prototype.$auth.isAuthenticated())
+    ) {
+        // Navigate to custom login page
+        next({ path: "/login" });
+    } else {
+        next();
+    }
+};
+
+router.beforeEach(onAuthRequired);
 
 export default router;
