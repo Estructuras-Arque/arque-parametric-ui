@@ -1,7 +1,7 @@
 <template lang="html">
   <div
     class="column is-three-fifths-fullhd is-half-desktop has-background-white"
-    :class="windowSize.isDesktop ? 'desktop-sd-viewer' : 'mobile-sd-viewer'"
+    :class="windowSize.width < 1007 ? 'mobile-sd-height' : ''"
   >
     <b-loading
       :is-full-page="true"
@@ -10,18 +10,11 @@
       class="geometry-loading"
     >
     </b-loading>
-    <div class="has-background-light" id="sdv-container">
-      <b-button
-        tag="a"
-        href="mailto:spatial@estructurasarque.com"
-        class="modal-contact-button
-      mt-4"
-        label="Contact Us"
-        type="is-info"
-        size="is-small"
-        icon-left="mail-bulk"
-      />
-    </div>
+    <div
+      class="has-background-light"
+      id="sdv-container"
+      :class="windowSize.width < 1007 ? 'mobile-sd-viewer' : ''"
+    ></div>
   </div>
 </template>
 
@@ -156,12 +149,14 @@ export default {
 .modal-contact-button {
   position: absolute;
   right: 50%;
-  z-index: 1000;
+  z-index: 0 !important;
 }
 #sdv-container {
+  z-index: 0 !important;
   width: 100% !important;
   height: 100% !important;
 }
+
 // .viewport-container {
 //   // display: flex;
 //   // flex-direction: row;
@@ -181,12 +176,15 @@ export default {
 }
 .mobile-sd-viewer {
   width: 100% !important;
-  height: 50vh;
   background-color: white;
+}
+.mobile-sd-height {
+  box-shadow: inset 1px 1px 10px 6px rgba(0, 0, 0, 0.08);
+  height: calc(50vh - 53px) !important;
 }
 .desktop-sd-viewer {
   width: 100%;
-  max-height: calc(100vh - 53px) !important;
+  height: calc(100vh - 53px) !important;
   background-color: white;
 }
 </style>

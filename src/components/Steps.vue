@@ -155,7 +155,7 @@ export default {
 <style lang="scss">
 .step-content {
   padding-top: 0.3rem;
-  height: 400px;
+  // height: 400px;
 }
 // .step-navigation {
 //   position: absolute;

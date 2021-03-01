@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="is-fullheight">
+  <div class="has-background-white">
     <b-collapse
       class="card mb-1"
       animation="slide"
@@ -62,7 +62,7 @@ export default {
 </script>
 
 <style lang="scss">
-.has-max-height-7 {
-  min-height: 300px;
+.has-parent-height {
+  height: 100%;
 }
 </style>

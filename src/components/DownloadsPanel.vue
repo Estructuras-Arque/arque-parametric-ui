@@ -1,49 +1,49 @@
 <template lang="html">
   <div
-    class="column is-one-fifth-fullhd is-one-quarter-desktop control-panel model-info"
+    id="downloads-panel"
+    class="column is-one-fifth-fullhd is-one-quarter-desktop has-background-light control-panel tabs-component model-info"
+    :class="windowSize.width < 1007 ? 'mobile-height' : ''"
   >
-    <div class="container has-background-light tabs-component">
-      <b-tabs
-        v-model="activeTab"
-        class="has-background-white tabs-component"
-        type="is-toggle"
-        size="is-small"
-        expanded
-      >
-        <b-tab-item label="Structure Details" icon="table">
-          <div class="section is-paddingless info-panel">
-            <simplebar data-simple-bar-auto-hide="false" class="simplebar">
-              <div class="container is-paddingless">
-                <collapse
-                  :tab-index="activeTab"
-                  :details="details"
-                  :isOpen="isOpen"
-                />
-              </div>
-            </simplebar>
+    <b-tabs
+      v-model="activeTab"
+      class="has-background-white"
+      :class="windowSize.width < 1007 ? 'mobile-height' : ''"
+      type="is-toggle"
+      size="is-small"
+      expanded
+      animation="slide-next"
+    >
+      <b-tab-item label="Structure Details" icon="table">
+        <div class="section is-paddingless info-panel">
+          <div class="container is-paddingless has-background-white">
+            <collapse
+              :tab-index="activeTab"
+              :details="details"
+              :isOpen="isOpen"
+            />
           </div>
-        </b-tab-item>
-        <b-tab-item label="Downloads" icon="cloud-download-alt">
-          <div class="section is-paddingless">
-            <div class="container is-fluid is-paddingless">
-              <steps
-                :claims="claims"
-                :tab-index="activeTab"
-                :download-params="downloadsTab"
-                @step-changed="stepChanged"
-                @step-ready="stepReady"
-                :export-sets="exportSets"
-              />
-            </div>
+        </div>
+      </b-tab-item>
+      <b-tab-item label="Downloads" icon="cloud-download-alt">
+        <div class="section is-paddingless">
+          <div class="container is-fluid is-paddingless info-panel">
+            <steps
+              :claims="claims"
+              :tab-index="activeTab"
+              :download-params="downloadsTab"
+              @step-changed="stepChanged"
+              @step-ready="stepReady"
+              :export-sets="exportSets"
+            />
           </div>
-        </b-tab-item>
-      </b-tabs>
-    </div>
+        </div>
+      </b-tab-item>
+    </b-tabs>
   </div>
 </template>
 
 <script>
-import simplebar from "simplebar-vue";
+// import simplebar from "simplebar-vue";
 import "simplebar/dist/simplebar.min.css";
 import Collapse from "@/components/Collapse.vue";
 import Steps from "@/components/Steps.vue";
@@ -57,7 +57,7 @@ export default {
     "downloadsTab",
     "claims"
   ],
-  components: { simplebar, Collapse, Steps },
+  components: { Collapse, Steps },
   data() {
     return {
       activeTab: 0,
@@ -91,9 +91,17 @@ export default {
 </script>
 
 <style lang="scss">
+#downloads-panel {
+  z-index: 90 !important;
+}
 .info-panel {
+  min-height: 510px;
   margin-top: 0.2em;
   -webkit-box-shadow: 0px 3px 10px -3px rgba(0, 0, 0, 0.19);
   box-shadow: 0px 3px 10px -3px rgba(0, 0, 0, 0.19);
+
+  .container {
+    min-height: 510px;
+  }
 }
 </style>
