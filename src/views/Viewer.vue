@@ -64,10 +64,10 @@
 </template>
 
 <script>
-import ControlPanel from "../components/ControlPanel.vue";
-import DownloadsPanel from "../components/DownloadsPanel.vue";
-import ShapediverViewer from "../components/ShapediverViewer.vue";
-import Navbar from "../components/Navbar.vue";
+import ControlPanel from "@/components/ControlPanel.vue";
+import DownloadsPanel from "@/components/DownloadsPanel.vue";
+import ShapediverViewer from "@/components/ShapediverViewer.vue";
+import Navbar from "@/components/Navbar.vue";
 
 export default {
   name: "Viewer",
