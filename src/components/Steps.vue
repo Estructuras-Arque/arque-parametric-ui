@@ -186,7 +186,7 @@ export default {
     },
     download(download) {
       if (download == true) {
-        console.log("download: ", download);
+        // console.log("download: ", download);
         this.activeStep = 0;
         this.requestDownloads(false);
       }

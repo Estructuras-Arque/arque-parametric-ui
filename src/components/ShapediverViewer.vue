@@ -51,7 +51,7 @@ export default {
     },
     downloadRequested: function(newDownload, oldDownload) {
       if (newDownload != oldDownload && newDownload == true) {
-        console.log("requesting");
+        // console.log("requesting");
         this.listDownloads(true);
       } else if (newDownload != oldDownload && newDownload == false) {
         this.listDownloads(false);
@@ -179,7 +179,7 @@ export default {
     },
 
     async listDownloads(activate) {
-      console.log("listing");
+      // console.log("listing");
       var plugin = this.currentTopology.id;
       var exportSettings = await this.shapediver.exports.get().data;
       this.exportSets = exportSettings.filter(function(param) {
@@ -192,7 +192,7 @@ export default {
     async activateDownloads() {
       for (let i = 0; i < this.exportSets.length; i++) {
         var download = this.exportSets[i];
-        console.log(download);
+        // console.log(download);
         await this.download(download.name, download.type, download.plugin);
       }
     },

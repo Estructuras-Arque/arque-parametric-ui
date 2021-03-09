@@ -339,8 +339,8 @@ export default {
       var claims = this.claims;
       var params = this.paramsTabs[this.userParamsIndex].params;
 
-      console.log("user claims", claims);
-      console.log("user params", params);
+      // console.log("user claims", claims);
+      // console.log("user params", params);
       for (const [, value] of Object.entries(claims)) {
         var claim = value["claim"];
         // eslint-disable-next-line no-unused-vars

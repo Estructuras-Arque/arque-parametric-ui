@@ -15,7 +15,7 @@ import "@okta/okta-signin-widget/dist/css/okta-sign-in.min.css";
 import Navbar from "../components/Navbar.vue";
 
 export default {
-  name: "login",
+  name: "Login",
   components: { Navbar },
   props: ["authenticated"],
   data() {
