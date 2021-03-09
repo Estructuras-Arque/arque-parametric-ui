@@ -27,7 +27,7 @@ export default {
     return {};
   },
 
-  props: ["detailTab", "columnsTitle"]
+  props: ["detailTab", "columnsTitle", "customNavigation"]
 };
 </script>
 

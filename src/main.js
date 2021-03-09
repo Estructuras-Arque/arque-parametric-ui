@@ -60,7 +60,10 @@ import {
     faArrowAltCircleRight,
     faQuestion,
     faCartArrowDown,
-    faMailBulk
+    faMailBulk,
+    faFileAlt,
+    faFileDownload,
+    faEllipsisV
 } from "@fortawesome/free-solid-svg-icons";
 import {} from "@fortawesome/free-regular-svg-icons";
 import {
@@ -128,7 +131,11 @@ library.add(
     faArrowAltCircleRight,
     faQuestion,
     faCartArrowDown,
-    faMailBulk
+    faMailBulk,
+    faFileAlt,
+    faInfoCircle,
+    faFileDownload,
+    faEllipsisV
 );
 Vue.component("vue-fontawesome", FontAwesomeIcon);
 import Buefy from "buefy";

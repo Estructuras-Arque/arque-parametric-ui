@@ -2,19 +2,26 @@
 <template>
   <div
     id="parameters-panel"
-    class="column is-one-fifth-fullhd is-one-quarter-desktop has-background-light control-panel tabs-component"
+    class="column is-one-fifth-fullhd is-one-quarter-desktop has-background-white control-panel tabs-component"
     :class="windowSize.width < 1007 ? 'mobile-height' : ''"
   >
     <b-tabs
       class="has-background-white"
-      :class="windowSize.width < 1007 ? 'mobile-height' : ' has-height-third'"
+      :class="windowSize.width < 1007 ? 'mobile-height' : 'has-height-third'"
       type="is-toggle"
       size="is-small"
       expanded
       animation="slide-next"
     >
-      <b-tab-item label="Parameters" icon="tools">
+      <b-tab-item
+        v-for="(tab, index) in parentTabs"
+        :key="index"
+        :label="windowSize.width < 1240 ? '' : tab.name"
+        :icon="tab.icon"
+        :disabled="tab.disabled"
+      >
         <div
+          v-if="tab.name == 'Parameters'"
           class="container is-fluid is-paddingless has-background-light is-fullheight"
         >
           <b-tabs
@@ -36,9 +43,12 @@
                   data-simplebar-auto-hide="true"
                   class="simplebar py-4"
                 >
-                  <div class="container" v-if="paramTab.name == 'Frame'">
+                  <div
+                    v-if="currentTopology.params.length > 0"
+                    class="container"
+                  >
                     <b-field
-                      v-if="shapediver"
+                      v-if="shapediver && paramTab.name == 'Frame'"
                       class="mt-1 ml-3 has-text-grey"
                       :message="topologyMessage"
                       label="Topology"
@@ -100,48 +110,7 @@
                       </p>
                     </b-field>
                     <b-field
-                      v-for="(param, key, index) in paramTab.params"
-                      :key="index"
-                      class="param-controllers"
-                      :label="param.name"
-                      grouped
-                    >
-                      <b-input
-                        @input="onParamChanged(param)"
-                        class="is-input-number my-1"
-                        size="is-small"
-                        v-if="param.type == 'Int' || param.type == 'Float'"
-                        v-model.number="param.value"
-                        maxlength="param.max"
-                        :step="param.type == 'Int' ? 1 : 0.1"
-                        type="number"
-                        lazy
-                      ></b-input>
-                      <b-slider
-                        type="is-info"
-                        size="is-small"
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Int' || param.type == 'Float'"
-                        :min="param.min"
-                        :max="param.max"
-                        v-model="param.value"
-                        :step="param.type == 'Int' ? 1 : 0.1"
-                        rounded
-                        ticks
-                        lazy
-                      ></b-slider>
-                      <b-switch
-                        type="is-info"
-                        size="is-small"
-                        @input="onParamChanged(param)"
-                        v-if="param.type == 'Bool'"
-                        v-model="param.value"
-                      ></b-switch>
-                    </b-field>
-                  </div>
-                  <div class="container" v-else>
-                    <b-field
-                      v-for="(param, index) in paramTab.params"
+                      v-for="(param, index) in orderedParams(paramTab.params)"
                       :key="index"
                       class="param-controllers"
                       :label="param.name"
@@ -186,61 +155,6 @@
           </b-tabs>
         </div>
       </b-tab-item>
-
-      <!-- TODO -->
-      <b-tab-item disabled label="Viewer" icon="eye">
-        <div class="section is-paddingless">
-          <div class="container is-fluid is-paddingless">
-            <div class="notification is-danger">
-              What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
-              printing and typesetting industry Lorem Ipsum has been the
-              industry's standard dummy text ever since the 1500s when an
-              unknown printer took a galley of type and scrambled it to make a
-              type specimen book it has?
-            </div>
-          </div>
-        </div>
-      </b-tab-item>
-      <b-tab-item disabled label="Materials" icon="cube">
-        <div class="section is-paddingless">
-          <div class="container is-fluid is-paddingless">
-            <div class="notification is-danger">
-              What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
-              printing and typesetting industry Lorem Ipsum has been the
-              industry's standard dummy text ever since the 1500s when an
-              unknown printer took a galley of type and scrambled it to make a
-              type specimen book it has?
-            </div>
-          </div>
-        </div>
-      </b-tab-item>
-      <b-tab-item disabled label="Camera" icon="camera-retro">
-        <div class="section is-paddingless">
-          <div class="container is-fluid is-paddingless">
-            <div class="notification is-danger">
-              What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
-              printing and typesetting industry Lorem Ipsum has been the
-              industry's standard dummy text ever since the 1500s when an
-              unknown printer took a galley of type and scrambled it to make a
-              type specimen book it has?
-            </div>
-          </div>
-        </div>
-      </b-tab-item>
-      <b-tab-item disabled label="Lights" icon="lightbulb">
-        <div class="section is-paddingless">
-          <div class="container is-fluid is-paddingless">
-            <div class="notification is-danger">
-              What is Lorem Ipsum Lorem Ipsum is simply dummy text of the
-              printing and typesetting industry Lorem Ipsum has been the
-              industry's standard dummy text ever since the 1500s when an
-              unknown printer took a galley of type and scrambled it to make a
-              type specimen book it has?
-            </div>
-          </div>
-        </div>
-      </b-tab-item>
-      <!-- TODO END-->
     </b-tabs>
   </div>
 </template>
@@ -270,6 +184,33 @@ export default {
         ticket: null,
         icon: null
       },
+      parentTabs: [
+        {
+          name: "Parameters",
+          icon: "tools",
+          disabled: false
+        },
+        {
+          name: "Viewer",
+          icon: "eye",
+          disabled: true
+        },
+        {
+          name: "Materials",
+          icon: "cube",
+          disabled: true
+        },
+        {
+          name: "Camera",
+          icon: "camera-retro",
+          disabled: true
+        },
+        {
+          name: "Lights",
+          icon: "lightbulb",
+          disabled: true
+        }
+      ],
       topologyMessage: null,
       collapses: [
         {
@@ -294,6 +235,19 @@ export default {
     this.changeTopology();
   },
   methods: {
+    orderedParams(params) {
+      return params.slice(0).sort(this.compareOrder);
+    },
+    compareOrder(a, b) {
+      if (a.order < b.order) {
+        return -1;
+      }
+      if (a.order > b.order) {
+        return 1;
+      }
+      return 0;
+    },
+
     clearStorage() {
       localStorage.clear();
       location.reload();
@@ -336,6 +290,7 @@ export default {
   height: 100%;
 }
 .has-max-height-4 {
+  min-height: 300px;
   max-height: 720px;
 }
 .has-max-height-5 {
@@ -394,7 +349,7 @@ export default {
   }
   /* Track */
   ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.4);
     -webkit-border-radius: 50px;
     border-radius: 50px;
   }

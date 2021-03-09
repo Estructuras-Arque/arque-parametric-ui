@@ -19,8 +19,8 @@
       <div id="viewer" class="columns is-desktop is-gapless">
         <!-- control panel -->
         <control-panel
-          :params-tabs="paramsTabs"
           :shapediver="shapediver"
+          :params-tabs="paramsTabs"
           @param-changed="onParamChanged"
           @topology-changed="onTopologyChanged"
           :topologies="topologies"
@@ -30,22 +30,33 @@
         <!-- shapediver-viewer -->
 
         <shapediver-viewer
-          :params-tabs="paramsTabs"
           @shapediver-ready="onShapediverReady"
-          :window-size="windowSize"
+          @params-tabs-ready="onParamsTabsReady"
+          :params-tabs="paramsTabs"
           :current-topology="currentTopology"
+          :window-size="windowSize"
           :topologies="topologies"
+          :download-format-index="downloadFormatIndex"
+          :download-requested="downloadRequested"
+          :exports.sync="exportsSets"
+          :download.sync="downloadValid"
+          :download-triggered="downloadTriggered"
         />
 
         <!-- model downloads -->
-
         <downloads-panel
           :claims="claims"
-          :details="details"
           :shapediver="shapediver"
-          :downloads-tab="paramsTabs[downloadsId].params[0]"
+          :params-tabs="paramsTabs"
+          :details="details"
+          :downloads-tab="paramsTabs[downloadsParamsIndex].params[0]"
           :window-size="windowSize"
           :current-topology="currentTopology"
+          :index.sync="downloadFormatIndex"
+          @requested-ready="onRequestingReady"
+          :exports-sets="exportsSets"
+          :download-valid="downloadValid"
+          @activation-ready="onDownloadingReady"
         />
       </div>
     </section>
@@ -69,11 +80,12 @@ export default {
   },
   data() {
     return {
+      paramsTabsReady: false,
       paramsTabs: [
         {
           name: "Frame",
           icon: "draw-polygon",
-          id: 0,
+          index: 0,
           names: [
             "Cantilever",
             "Positive Height",
@@ -93,7 +105,7 @@ export default {
         {
           name: "Subdivisions",
           icon: "border-all",
-          id: 2,
+          index: 1,
           names: [
             "N⍛ Divisions  (X)",
             "N⍛ Divisions  (Y)",
@@ -107,7 +119,7 @@ export default {
         {
           name: "Columns",
           icon: "grip-lines-vertical",
-          id: 3,
+          index: 2,
           names: [
             "N⍛ Columns (X)",
             "N⍛ Columns (Y)",
@@ -125,26 +137,36 @@ export default {
         {
           name: "Downloads",
           icon: "cloud-download-alt",
-          id: 4,
+          index: 3,
           names: ["Export Type"],
           params: [],
           displayed: false
         },
         {
-          name: "User Details",
+          name: "User Info",
           icon: "user-circle",
-          id: 4,
-          names: ["Export Type"],
+          index: 4,
+          names: [
+            "name",
+            "preferred_username",
+            "organization",
+            "locale",
+            "mobile",
+            "email",
+            "message"
+          ],
           params: [],
           displayed: false
         }
       ],
-      downloadsId: 0,
+      downloadsParamsIndex: 0,
+      userParamsIndex: 0,
       shapediver: null,
       geometryReady: false,
       showRight: true,
       showLeft: true,
       isLoading: true,
+      exportsSets: [],
       currentTopology: {
         name: "undefined",
         loaded: false,
@@ -168,7 +190,7 @@ export default {
           details: [],
           index: 0,
           ticket:
-            "22572ea61710ec728bfa3501c0f677911f379317103074c57998495eaca3c1a7034d12c9e47255fa97cfbdf469f79b7e4558f797d4f90a3602e082e271d2155a55a912e0999c769d7b1d864858934ab12b0490504c6a95242cebbacea3d27c765816d53e4982f307d208e92e5f95f766c572b2129ca7-cf75af7365fcd996aef3db010da65c5f",
+            "674a0ee0ceaa34f6020e25592c27bfecc9d82654e8f94eeeeeabfb548dfde373c8585ef4d59405a9460c7c0eef69ada7f144324169fe4ee6eedb677c20996ab7b0d7c319324ba34828875b6d13fcfd5bb5c0d663dc78ef0b6ed54b6ee4a51b2e4ec40f6cb1307bae38cedf55a92d879c7a4e37aa07e9-bc1ca0d2e4cb4faa7b065c48c7dccfec",
           icon: ""
         },
         {
@@ -181,7 +203,7 @@ export default {
           details: [],
           index: 1,
           ticket:
-            "674c96267e7abfc9ad56d2eaed1de3e5040486649a65850b0d5b094ab1f33e45dbb7527877c5fda41adf9b9dfdc83f35e43b7fc852ef188f598f778ba78dbd58ad8f4f81dbeb811eefba6b165c442433fadc80dcce1c4f6f7b63800de38f053a1e824f5c6a8291cfd8fb614fc53a5b6333439d253f4d-bbb6c0f4d591df5bf2e77161f424bd06",
+            "4b4e99fdee7c573bbbda41eb34f40f6a0d945b9b112c6e302cd7d3e23b61af5d41678a6ed467a01d304a57715e21128eb15831e08c7adab8e6e5e81e89e02706f00b524b9c88e5101e1d15f7ae09f73b2b1d81a588e0a0810f18a5785dda2f67543fb2fa7bb3574eb17241bd6e9b1b78cb08730f57c7-3f253540f3cef9a88dd917bda88a3c77",
           icon: ""
         },
         {
@@ -194,7 +216,7 @@ export default {
           details: [],
           index: 2,
           ticket:
-            "3422a552bddaad005dbe773ddaef0efefca0881f3b1d70db27e3103bb7f336aa62839005315e2aeb8dbf5f5f4bcab44529982a6e35a7af1a78f5d51c13d2c1dd75ea819ed569403b8eee7fa2ff1447adc86e3184c9bf4f1ce4404512a6694fa187b128482804e3079ce784e4dea80182e757bb1cbb7c-38e7ecc6f4bd38bd7147da84e21e801b",
+            "184767f387cf3a698e216dbe0ec41947731d2257ac98d53a24c9f028c7e025fd426912313cbc0b44e589f4e0431e910314265ccf51a582793f127dd33ffbad3b33de1e615148d6919a791133e9a0e25b3631a58a7061e7673656523f54ad780e02ca412757191407dad66f6a74854b35b9f72fc46063-e62e031cb2ae90dc781add9bf5c23188",
           icon: ""
         },
         {
@@ -207,7 +229,7 @@ export default {
           details: [],
           index: 3,
           ticket:
-            "d96bfde054293d49d4266a9313e62dc971525fd5a962800c35c8c9d7122483f1b21dd3267802e2b1446eaa40f9fe277d797acc75b03b826d4dbcea6e1fa33c94016f0f83a3271c6461e2d9820fdc755fb94f2b1f19381b51970d1b54295e45f9c81f7f75a4cc8b6e0e30ea57792eaa3670e0496cc067-e60364391a0c2eb405acb24c580b2199",
+            "c1a9cb3f70d698081db55796ad9572fbe3117d868aa6f8fadc3a9ba66149eb7101e62615045ec87db961d25ff02657b6598150eba6ea4489230fab70bcf0d8099407e27e778b4e860aa7f1d69d18412120a9b86a63d3f25ee66215fc57dbdec052ff792b254ecd47c68b97e72520ad9f6570df5fa9b6-6b6efb564dc948033a238018700ad462",
           icon: ""
         },
         {
@@ -220,25 +242,45 @@ export default {
           details: [],
           index: 4,
           ticket:
-            "d6f1065553dc495611ad53e43d30cfa23bb32af84bcc433e3ac31ec993ee98a18cef1fdc4e3b0b260a8c3fe445f7c768d8b4d17ff14a60c3d3be55b3dccdb273748d66a0c110e98c05af7c465a5b22c695542291f5cbbc4ce123645a016c3103740ec26ce205bea62c43b0ca753fca9b74efe63e8ad5-092b3c8c0d6431811184f2dcbe10fbd1",
+            "1d689b865b2e266c8a1035649bb7c9714a57fd61a70903b2b0ab0fefd5dc7ffe98d15f2a85dd4e38d466e51d0a0297b3de94ac910246aadcb31b07ed82091bda5be8dc515d7912e9a27c1c4f922b32cf8a20a8823e83ebf3356e89b0f31b8a93ec1cf154f50ad5e756916765749ef4687b2f75543c3e-d54abe92e68eba42629cd36ec295d8f7",
           icon: ""
         }
       ],
       details: [],
-
-      detailsTable: [],
-      updated: false
+      downloadFormatIndex: 0,
+      downloadRequested: false,
+      downloadValid: false,
+      downloadTriggered: false
     };
   },
-  mounted() {
-    this.getDownloadsId();
+  watch: {
+    // paramsTabsReady: function(newParams, oldParams) {
+    //   if (newParams != oldParams && newParams == true && this.authenticated) {
+    //   }
+    // },
+    downloadValid: function(newTrigger, oldTrigger) {
+      if (newTrigger != oldTrigger && newTrigger == true) {
+        this.getUserDetails();
+      }
+    }
+  },
+  created() {
+    this.getDownloadsParamsIndex();
+    this.getUserParamsIndex();
   },
   methods: {
-    getDownloadsId() {
+    getDownloadsParamsIndex() {
       var downloads = this.paramsTabs.filter(
         element => element.name == "Downloads"
       );
-      this.downloadsId = downloads[0].id;
+      this.downloadsParamsIndex = downloads[0].index;
+    },
+
+    getUserParamsIndex() {
+      var userIndex = this.paramsTabs.filter(
+        element => element.name == "User Info"
+      );
+      this.userParamsIndex = userIndex[0].index;
     },
     onShapediverReady(value) {
       this.shapediver = value;
@@ -246,15 +288,17 @@ export default {
         this.isLoading = false;
       }
     },
+
     onTopologyChanged(value) {
       value.loaded = true;
       this.currentTopology = value;
     },
-
-    onParamsTabsReady(value) {
-      this.paramsTabs = value;
+    onRequestingReady(value) {
+      this.downloadRequested = value;
     },
-
+    onDownloadingReady(value) {
+      this.downloadTriggered = value;
+    },
     async getPluginDetails() {
       var allDetails = await this.shapediver.scene.getData(
         {},
@@ -266,8 +310,11 @@ export default {
       });
     },
 
+    onParamsTabsReady(value) {
+      this.paramsTabsReady = value;
+    },
+
     async onParamChanged(param) {
-      this.updated = !this.updated;
       // console.log("param changed");
       await this.shapediver.parameters.updateAsync({
         name: param.name,
@@ -276,15 +323,55 @@ export default {
         plugin: param.plugin
       });
       await this.getPluginDetails();
+    },
+
+    // onFormatChanged(index) {
+    //   var downloads = this.paramsTabs[this.downloadsParamsIndex].params[0];
+    //   console.log(index, ":", downloads);
+    //   this.shapediver.parameters.updateAsync({
+    //     name: "Export Type",
+    //     value: 2
+    //   });
+    //   console.log(index, ":", downloads);
+    // },
+
+    getUserDetails() {
+      var claims = this.claims;
+      var params = this.paramsTabs[this.userParamsIndex].params;
+
+      console.log("user claims", claims);
+      console.log("user params", params);
+      for (const [, value] of Object.entries(claims)) {
+        var claim = value["claim"];
+        // eslint-disable-next-line no-unused-vars
+        var input = value["value"];
+
+        // console.log(key, "claim:", claim, "value:", input);
+        // eslint-disable-next-line no-unused-vars
+        for (const [k, v] of Object.entries(params)) {
+          if (v.name == "mobile") {
+            v.name = "phone_number";
+          } else if (v.name === claim) {
+            v.value = input;
+            // console.log("found", v.name, claim, "input", input);
+            // console.log(`${k}: name: ${v.name} value: ${v.value}`);
+            // console.log(`${key}: ${value}`);
+            // console.log(`${k}: name: ${v.name} type: ${v.type}`);
+
+            this.shapediver.parameters.updateAsync({
+              name: v.name,
+              value: v.value,
+              plugin: this.currentTopology.id
+            });
+          }
+        }
+      }
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-// .has-max-mobile {
-//   height: 500px;
-// }
 #viewer {
   width: 100%;
   margin: 0;

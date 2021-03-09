@@ -3,10 +3,10 @@
     <!-- <window-size /> -->
     <!-- <transition name="sliding"> -->
     <router-view
-      :claims="claims"
+      :authenticated="authenticated"
       :is-authenticated="isAuthenticated"
       :window-size="windowSize"
-      :authenticated="authenticated"
+      :claims="claims"
     />
     <!-- </transition> -->
   </div>
@@ -50,12 +50,16 @@ export default {
 
   watch: {
     // Everytime the route changes, check for auth status
-    $route: "isAuthenticated"
+    $route: "isAuthenticated",
+    authenticated: function(auth) {
+      if (auth == true) {
+        this.getClaims();
+      }
+    }
   },
   methods: {
     async isAuthenticated() {
       this.authenticated = await this.$auth.isAuthenticated();
-      await this.getClaims();
     },
     async logout() {
       await this.$auth.logout();
