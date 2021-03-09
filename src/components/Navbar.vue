@@ -3,7 +3,7 @@
     <template #brand>
       <b-navbar-item @click="$router.push({ path: '/' })">
         <img
-          src="http://estructurasarque.com/wp-content/uploads/2017/11/logo-web-arque.png"
+          src="@/assets/logo-web-arque.png"
           alt="Lightweight Metal Structures"
         />
       </b-navbar-item>
@@ -65,10 +65,6 @@ export default {
     },
     async logout() {
       await this.$auth.logout();
-      await this.isAuthenticated();
-
-      // Navigate back to home
-      this.$router.push({ path: "/" });
     }
   }
 };
