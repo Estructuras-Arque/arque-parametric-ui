@@ -9,11 +9,11 @@
       </b-navbar-item>
     </template>
     <template #start>
-      <b-navbar-item href="/documentation">
+      <!-- <b-navbar-item href="/documentation">
         Documentation
-      </b-navbar-item>
+      </b-navbar-item> -->
       <b-navbar-dropdown collapsible label="About Us">
-        <b-navbar-item href="/about">The team</b-navbar-item>
+        <!-- <b-navbar-item href="/about">The team</b-navbar-item> -->
         <b-navbar-item
           href="http://estructurasarque.com/arque-spatial-systems/"
         >
