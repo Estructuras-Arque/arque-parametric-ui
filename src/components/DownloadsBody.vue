@@ -2,8 +2,8 @@
   <tbody v-if="detail">
     <tr v-for="(table, index) in tables" :key="index">
       <td
-        v-for="(info, index) in table"
-        :key="index"
+        v-for="(info, key) in table"
+        :key="key"
         class="is-size-7 has-text-weight-semibold"
         :class="info != 'Available' ? 'has-text-dark' : 'has-text-primary'"
       >
@@ -21,7 +21,7 @@ export default {
       tables: []
     };
   },
-  props: ["detail"],
+  props: ["detail", "customNavigation"],
   watch: {
     detail: function(newData, oldData) {
       if (newData != oldData && oldData) {
@@ -38,11 +38,10 @@ export default {
   },
   methods: {
     organizeInTable(data) {
-      for (let i = 0; i < data.length; i++) {
-        var element = data[i];
+      data.forEach(element => {
         // eslint-disable-next-line no-useless-escape
         this.updateDownloadsList(element, "Available");
-      }
+      });
     },
     updateDownloadsList(data, status) {
       var info;

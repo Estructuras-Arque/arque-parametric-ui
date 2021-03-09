@@ -1,4 +1,4 @@
-# arque-vue-1.0
+# arque-parameteric-ui
 
 ## Project setup
 ```

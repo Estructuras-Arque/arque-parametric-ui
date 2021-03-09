@@ -15,7 +15,7 @@ import "@okta/okta-signin-widget/dist/css/okta-sign-in.min.css";
 import Navbar from "../components/Navbar.vue";
 
 export default {
-  name: "login",
+  name: "LogIn",
   components: { Navbar },
   props: ["authenticated"],
   data() {
@@ -23,7 +23,6 @@ export default {
       widget: null,
       oktaSignIn: null,
       google: null,
-      claims: [],
       error: {
         errorSummary: "API Error",
         errorCauses: [

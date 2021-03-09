@@ -1,12 +1,12 @@
 /* eslint-disable prettier/prettier */
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
-import Login from "../views/Login.vue";
-import Viewer from "../views/Viewer.vue";
-import Profile from "../views/Profile.vue";
-import About from "../views/About.vue";
-import Documentation from "../views/Documentation.vue";
+import Home from "@/views/Home.vue";
+import LogIn from "@/views/LogIn.vue";
+import Viewer from "@/views/Viewer.vue";
+import Profile from "@/views/Profile.vue";
+import About from "@/views/About.vue";
+import Documentation from "@/views/Documentation.vue";
 
 import Auth from "@okta/okta-vue";
 
@@ -25,8 +25,8 @@ const routes = [{
     },
     {
         path: "/login",
-        name: "Login",
-        component: Login
+        name: "LogIn",
+        component: LogIn
     },
     {
         path: "/profile",

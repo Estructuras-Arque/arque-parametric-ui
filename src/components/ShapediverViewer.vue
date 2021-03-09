@@ -1,7 +1,7 @@
 <template lang="html">
   <div
     class="column is-three-fifths-fullhd is-half-desktop has-background-white"
-    :class="windowSize.isDesktop ? 'desktop-sd-viewer' : 'mobile-sd-viewer'"
+    :class="windowSize.width < 1007 ? 'mobile-sd-height' : ''"
   >
     <b-loading
       :is-full-page="true"
@@ -10,18 +10,11 @@
       class="geometry-loading"
     >
     </b-loading>
-    <div class="has-background-light" id="sdv-container">
-      <b-button
-        tag="a"
-        href="mailto:spatial@estructurasarque.com"
-        class="modal-contact-button
-      mt-4"
-        label="Contact Us"
-        type="is-info"
-        size="is-small"
-        icon-left="mail-bulk"
-      />
-    </div>
+    <div
+      class="has-background-light"
+      id="sdv-container"
+      :class="windowSize.width < 1007 ? 'mobile-sd-viewer' : ''"
+    ></div>
   </div>
 </template>
 
@@ -33,7 +26,9 @@ export default {
     "topologies",
     "currentTopology",
     "paramsTabs",
-    "claims"
+    "downloadFormatIndex",
+    "downloadRequested",
+    "downloadTriggered"
   ],
   data() {
     return {
@@ -41,7 +36,9 @@ export default {
       shapediver: null,
       maxHeight: 100,
       isScrollable: true,
-      allParams: []
+      allParams: [],
+      exportSets: [],
+      downloadValid: false
     };
   },
   watch: {
@@ -50,6 +47,19 @@ export default {
       if (newTopo != oldTopo && oldTopo.id != null) {
         this.showPluginContents(oldTopo.id, false);
         this.showPluginContents(newTopo.id, true);
+      }
+    },
+    downloadRequested: function(newDownload, oldDownload) {
+      if (newDownload != oldDownload && newDownload == true) {
+        // console.log("requesting");
+        this.listDownloads(true);
+      } else if (newDownload != oldDownload && newDownload == false) {
+        this.listDownloads(false);
+      }
+    },
+    downloadTriggered: function(newDownload, oldDownload) {
+      if (newDownload != oldDownload && newDownload == true) {
+        this.activateDownloads();
       }
     }
   },
@@ -146,7 +156,60 @@ export default {
         return frameParamNames.includes(param.name.trim());
       });
 
+      this.updateOrder(tab, frameParamNames);
       // console.log("after load", currentParams);
+      this.$emit("params-tabs-ready", true);
+    },
+
+    updateOrder(tab, names) {
+      for (let i = 0; i < tab.params.length; i++) {
+        const param = tab.params[i];
+        names.filter(function(name) {
+          var index = names.indexOf(name);
+          if (param.name == name) {
+            param.order = index;
+            // console.log(index, param.order);
+          }
+        });
+        this.shapediver.parameters.updateAsync({
+          name: param.name,
+          order: param.order
+        });
+      }
+    },
+
+    async listDownloads(activate) {
+      // console.log("listing");
+      var plugin = this.currentTopology.id;
+      var exportSettings = await this.shapediver.exports.get().data;
+      this.exportSets = exportSettings.filter(function(param) {
+        return param.plugin.includes(plugin);
+      });
+      this.$emit("update:exports", this.exportSets);
+      this.downloadValid = activate;
+      this.$emit("update:download", activate);
+    },
+    async activateDownloads() {
+      for (let i = 0; i < this.exportSets.length; i++) {
+        var download = this.exportSets[i];
+        // console.log(download);
+        await this.download(download.name, download.type, download.plugin);
+      }
+    },
+    async download(name, type, plugin) {
+      await this.shapediver.exports
+        .requestAsync({ name: name, type: type, plugin: plugin })
+        .catch(function(err) {
+          return Promise.reject(err);
+        })
+        .then(function(response) {
+          if (response.data.type == "download") {
+            let link = response.data.content[0].href;
+            window.location = link;
+            alert("Download Successful");
+            localStorage.clear();
+          } else;
+        });
     }
   }
 };
@@ -156,24 +219,13 @@ export default {
 .modal-contact-button {
   position: absolute;
   right: 50%;
-  z-index: 1000;
+  z-index: 0 !important;
 }
 #sdv-container {
+  z-index: 0 !important;
   width: 100% !important;
   height: 100% !important;
 }
-// .viewport-container {
-//   // display: flex;
-//   // flex-direction: row;
-//   // flex-wrap: wrap;
-
-//   // overflow: hidden;
-//   // background-color: green;
-// }
-// #sdv-container {
-//   width: 100%;
-//   height: 100%;
-// }
 .geometry-loading {
   position: relative;
   width: 100%;
@@ -181,12 +233,15 @@ export default {
 }
 .mobile-sd-viewer {
   width: 100% !important;
-  height: 50vh;
   background-color: white;
+}
+.mobile-sd-height {
+  box-shadow: inset 1px 1px 10px 6px rgba(0, 0, 0, 0.08);
+  height: calc(50vh - 53px) !important;
 }
 .desktop-sd-viewer {
   width: 100%;
-  max-height: calc(100vh - 53px) !important;
+  height: calc(100vh - 53px) !important;
   background-color: white;
 }
 </style>
