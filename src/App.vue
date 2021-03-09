@@ -4,7 +4,6 @@
     <!-- <transition name="sliding"> -->
     <router-view
       :authenticated="authenticated"
-      :is-authenticated="isAuthenticated"
       :window-size="windowSize"
       :claims="claims"
     />
@@ -73,9 +72,9 @@ export default {
         await this.$auth.getUser()
       ).map(entry => ({ claim: entry[0], value: entry[1] }));
     },
-    login() {
-      this.$auth.loginRedirect("/app");
-    },
+    // login() {
+    //   this.$auth.loginRedirect("/app");
+    // },
     isDesktop() {
       this.windowSize.isDesktop = true;
     },
