@@ -159,6 +159,7 @@ export default {
           displayed: false
         }
       ],
+      param: {},
       downloadsParamsIndex: 0,
       userParamsIndex: 0,
       shapediver: null,
@@ -254,10 +255,6 @@ export default {
     };
   },
   watch: {
-    // paramsTabsReady: function(newParams, oldParams) {
-    //   if (newParams != oldParams && newParams == true && this.authenticated) {
-    //   }
-    // },
     downloadValid: function(newTrigger, oldTrigger) {
       if (newTrigger != oldTrigger && newTrigger == true) {
         this.getUserDetails();
@@ -315,7 +312,7 @@ export default {
     },
 
     async onParamChanged(param) {
-      // console.log("param changed");
+      this.param = param; // console.log("param changed");
       await this.shapediver.parameters.updateAsync({
         name: param.name,
         id: param.id,
@@ -325,14 +322,14 @@ export default {
       await this.getPluginDetails();
     },
 
-    // onFormatChanged(index) {
-    //   var downloads = this.paramsTabs[this.downloadsParamsIndex].params[0];
-    //   console.log(index, ":", downloads);
-    //   this.shapediver.parameters.updateAsync({
-    //     name: "Export Type",
-    //     value: 2
+    // async onFormatChanged(index) {
+    //   console.log(index);
+    //   await this.shapediver.parameters.updateAsync({
+    //     name: this.paramsTabs[this.downloadsParamsIndex].name,
+    //     id: this.paramsTabs[this.downloadsParamsIndex].id,
+    //     plugin: this.paramsTabs[this.downloadsParamsIndex].plugin,
+    //     value: index
     //   });
-    //   console.log(index, ":", downloads);
     // },
 
     getUserDetails() {
@@ -373,6 +370,7 @@ export default {
 
 <style lang="scss" scoped>
 #viewer {
+  z-index: 0;
   width: 100%;
   margin: 0;
   overflow: hidden;
@@ -380,12 +378,10 @@ export default {
 }
 
 .hero-head {
-  z-index: 100;
+  z-index: 1000;
   height: 53px !important;
 }
 #navbar-viewer {
-  z-index: 100;
-  // height: 53px !important;
   -webkit-box-shadow: 0px 2px 5px -1px rgba(0, 0, 0, 0.3);
   box-shadow: 0px 2px 5px -1px rgba(0, 0, 0, 0.3);
 }

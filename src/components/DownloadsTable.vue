@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
   <table
     class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
   >
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import DownloadsBody from "../components/DownloadsBody.vue";
+import DownloadsBody from "@/components/DownloadsBody.vue";
 export default {
   name: "DownloadsTable",
   components: {

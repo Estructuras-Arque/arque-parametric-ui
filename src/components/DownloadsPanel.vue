@@ -5,6 +5,7 @@
     class="column is-one-fifth-fullhd is-one-quarter-desktop has-background-white control-panel tabs-component model-info"
     :class="windowSize.width < 1007 ? 'mobile-height' : ''"
   >
+    <div v-if="windowSize.width > 1007"><message-box /></div>
     <b-tabs
       v-model="activeTab"
       class="has-background-white"
@@ -21,7 +22,11 @@
         <div
           class="container is-fluid is-paddingless has-background-light is-fullheight inset"
         >
-          <simplebar data-simplebar-auto-hide="true" class="simplebar py-4">
+          <simplebar
+            data-simplebar-auto-hide="false"
+            class="simplebar py-4"
+            :class="windowSize.width < 1240 ? 'is-scrollmore' : ''"
+          >
             <div class="container px-1">
               <collapse
                 :tab-index="activeTab"
@@ -41,7 +46,7 @@
         >
           <simplebar
             id="downloads"
-            data-simplebar-auto-hide="true"
+            data-simplebar-auto-hide="false"
             class="simplebar py-4"
           >
             <div class="container px-1 is-fullheight">
@@ -72,6 +77,8 @@ import simplebar from "simplebar-vue";
 import "simplebar/dist/simplebar.min.css";
 import Collapse from "@/components/Collapse.vue";
 import Steps from "@/components/Steps.vue";
+import MessageBox from "@/components/MessageBox.vue";
+
 export default {
   name: "DownloadsPanel",
   props: [
@@ -84,7 +91,7 @@ export default {
     "claims",
     "downloadValid"
   ],
-  components: { simplebar, Collapse, Steps },
+  components: { simplebar, Collapse, Steps, MessageBox },
   data() {
     return {
       activeTab: 0,
