@@ -1,7 +1,7 @@
-<template lang="html">
+<template>
   <div
     class="column is-three-fifths-fullhd is-half-desktop has-background-white"
-    :class="windowSize.width < 1007 ? 'mobile-sd-height' : ''"
+    :class="windowSize.width < 1007 ? 'mobile-sd-height m-1 inset' : ''"
   >
     <b-loading
       :is-full-page="true"
@@ -14,13 +14,21 @@
       class="has-background-light"
       id="sdv-container"
       :class="windowSize.width < 1007 ? 'mobile-sd-viewer' : ''"
-    ></div>
+    >
+      <div class="is-absolute" v-if="windowSize.width < 1007">
+        <message-box :is-mobile="true" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import MessageBox from "@/components/MessageBox.vue";
 export default {
   name: "ShapediverViewer",
+  components: {
+    MessageBox
+  },
   props: [
     "windowSize",
     "topologies",
@@ -28,7 +36,8 @@ export default {
     "paramsTabs",
     "downloadFormatIndex",
     "downloadRequested",
-    "downloadTriggered"
+    "downloadTriggered",
+    "paramChanged"
   ],
   data() {
     return {
@@ -42,6 +51,11 @@ export default {
     };
   },
   watch: {
+    // paramChanged: function(newParam, oldParam) {
+    //   if (newParam != oldParam && oldParam != null) {
+    //     this.onParamChanged(newParam);
+    //   } else this.onParamChanged(oldParam);
+    // },
     // whenever currentTopology changes, this function will run
     currentTopology: function(newTopo, oldTopo) {
       if (newTopo != oldTopo && oldTopo.id != null) {
@@ -177,7 +191,15 @@ export default {
         });
       }
     },
-
+    // async onParamChanged(param) {
+    //   // console.log("param changed");
+    //   await this.shapediver.parameters.updateAsync({
+    //     name: param.name,
+    //     id: param.id,
+    //     value: param.value,
+    //     plugin: param.plugin
+    //   });
+    // },
     async listDownloads(activate) {
       // console.log("listing");
       var plugin = this.currentTopology.id;
@@ -216,10 +238,8 @@ export default {
 </script>
 
 <style lang="scss">
-.modal-contact-button {
+.is-absolute {
   position: absolute;
-  right: 50%;
-  z-index: 0 !important;
 }
 #sdv-container {
   z-index: 0 !important;
@@ -243,5 +263,8 @@ export default {
   width: 100%;
   height: calc(100vh - 53px) !important;
   background-color: white;
+}
+.inset {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
 </style>

@@ -40,7 +40,7 @@
                 id="param-tab"
               >
                 <simplebar
-                  data-simplebar-auto-hide="true"
+                  data-simplebar-auto-hide="false"
                   class="simplebar py-4"
                 >
                   <div
@@ -57,12 +57,12 @@
                       <b-dropdown
                         :disabled="!shapediver"
                         focus
-                        :mobile-modal="
-                          windowSize.isDesktop == false ? true : false
+                        :max-height="windowSize.width < 1007 ? maxHeight : ''"
+                        :scrollable="
+                          windowSize.width < 1007 ? isScrollable : ''
                         "
-                        class="pb-1 is-zindex"
-                        :scrollable="isScrollable"
-                        :max-height="maxHeight"
+                        :mobile-modal="false"
+                        class="pb-1"
                         v-model="currentTopology"
                         aria-role="list"
                       >
@@ -172,7 +172,7 @@ export default {
     return {
       isOpen: 2,
       isScrollable: true,
-      maxHeight: 200,
+      maxHeight: 100,
       currentTopology: {
         name: "None Selected",
         loaded: false,
@@ -370,9 +370,7 @@ export default {
   overflow: hidden;
   height: calc(30vh - 53px) !important;
 }
-.dropdown.is-mobile-modal > .dropdown-menu {
-  z-index: 100 !important;
-}
+
 .control-panel {
   padding: 0.75rem !important;
   // z-index: 50;
@@ -383,8 +381,5 @@ export default {
 .control-panel.model-info {
   -webkit-box-shadow: -5px 0px 5px -1px rgba(0, 0, 0, 0.3) !important;
   box-shadow: -5px 0px 5px -1px rgba(0, 0, 0, 0.3) !important;
-}
-.mobile-control-panel {
-  height: 250px;
 }
 </style>

@@ -112,27 +112,6 @@ $info-invert: findColorInvert($info);
 $warning: #ff9900;
 $warning-invert: findColorInvert($warning);
 
-// ::-webkit-scrollbar {
-//   height: 6px;
-// }
-// /* Track */
-// ::-webkit-scrollbar-track {
-//   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-//   -webkit-border-radius: 50px;
-//   border-radius: 50px;
-// }
-
-// /* Handle */
-// ::-webkit-scrollbar-thumb {
-//   -webkit-border-radius: 50px;
-//   border-radius: 50px;
-//   background: rgba(74, 74, 74, 0.8);
-//   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
-// }
-
-// ::-webkit-scrollbar-thumb:window-inactive {
-//   background: rgba(74, 74, 74, 0.8);
-// }
 /* Let's get this party started */
 
 // Setup $colors to use as bulma classes (e.g. 'is-twitter')

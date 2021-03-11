@@ -40,9 +40,8 @@
               position="is-bottom"
               :active="true"
             >
-              <b-button v-if="showTitle" @click="$router.push({ path: '/app' })"
-                ><p v-if="authenticated">Start</p>
-                <p v-else>Sign In</p></b-button
+              <b-button v-if="showTitle" @click="startApp"
+                ><p>Sign In</p></b-button
               ></b-tooltip
             ></transition
           >
@@ -92,9 +91,16 @@ export default {
     this.LoadTitle();
     this.LoadBackB();
   },
+  watch: {
+    authenticated: function(newAuth, oldAuth) {
+      if (newAuth != oldAuth && newAuth == true) {
+        this.startApp();
+      }
+    }
+  },
   methods: {
-    login() {
-      this.$auth.loginRedirect("/app");
+    async startApp() {
+      await this.$router.push({ path: "/app" });
     },
     LoadLogo() {
       setTimeout(this.ShowLogo, 1000);
