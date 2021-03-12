@@ -83,8 +83,6 @@
           >
             <b-field
               message="Select the format you desire"
-              label-position="on-border"
-              label="Available Formats"
               class="mt-1 pb-6 ml-3 has-text-grey"
             >
               <p class="control">
