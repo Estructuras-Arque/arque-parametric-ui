@@ -6,6 +6,7 @@
         :class="isMobile ? 'is-thirdquarterwidth' : ''"
       >
         <b-button
+          :size="isMobile ? 'is-small' : ''"
           type="is-info"
           focused
           class="control mx-2"
@@ -34,6 +35,12 @@ export default {
 <style lang="scss">
 .is-thirdquarterwidth {
   width: 70%;
+}
+.message-body {
+  padding-top: 0.8em;
+  padding-right: 1em;
+  padding-bottom: 0.8em;
+  padding-left: 1em;
 }
 .message-body {
   padding-top: 0.8em;

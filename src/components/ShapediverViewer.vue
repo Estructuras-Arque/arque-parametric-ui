@@ -1,7 +1,11 @@
 <template>
   <div
     class="column is-three-fifths-fullhd is-half-desktop has-background-white"
-    :class="windowSize.width < 1007 ? 'mobile-sd-height m-1 inset' : ''"
+    :class="
+      windowSize.width < 1007
+        ? 'mobile-column-height m-1 inset is-overflow-hidden'
+        : ''
+    "
   >
     <b-loading
       :is-full-page="true"
@@ -11,13 +15,12 @@
     >
     </b-loading>
     <div
-      class="has-background-light"
       id="sdv-container"
-      :class="windowSize.width < 1007 ? 'mobile-sd-viewer' : ''"
-    >
-      <div class="is-absolute" v-if="windowSize.width < 1007">
-        <message-box :is-mobile="true" />
-      </div>
+      class="has-background-light"
+      :class="windowSize.width < 1007 ? 'mobile-sd-viewer' : 'sdv-container'"
+    ></div>
+    <div class="" v-if="windowSize.width < 1007">
+      <message-box :is-mobile="true" />
     </div>
   </div>
 </template>
@@ -238,10 +241,14 @@ export default {
 </script>
 
 <style lang="scss">
+.is-overflow-hidden {
+  overflow: hidden;
+}
 .is-absolute {
   position: absolute;
+  top: 0;
 }
-#sdv-container {
+.sdv-container {
   z-index: 0 !important;
   width: 100% !important;
   height: 100% !important;
@@ -252,10 +259,15 @@ export default {
   height: 100%;
 }
 .mobile-sd-viewer {
+  height: 87%;
   width: 100% !important;
   background-color: white;
 }
 .mobile-sd-height {
+  box-shadow: inset 1px 1px 10px 6px rgba(0, 0, 0, 0.08);
+  height: calc(40vh - 53px) !important;
+}
+.mobile-column-height {
   box-shadow: inset 1px 1px 10px 6px rgba(0, 0, 0, 0.08);
   height: calc(50vh - 53px) !important;
 }
