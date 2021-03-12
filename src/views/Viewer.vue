@@ -161,10 +161,10 @@ export default {
         {
           name: "Rulers",
           icon: "ruler",
-          index: 4,
-          names: ["Rulers Offset (m)", "Rulers Size (m)"],
+          index: 5,
+          names: ["Rulers", "Rulers Offset (m)", "Rulers Size (m)"],
           params: [],
-          displayed: false
+          displayed: true
         }
       ],
       param: {},
