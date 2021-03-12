@@ -45,14 +45,15 @@ export default {
 .message-body {
   padding-top: 0.8em;
   padding-right: 1em;
-  padding-bottom: 0.8em;
+  padding-bottom: 1.5em;
   padding-left: 1em;
 }
 .message.is-info {
   background-color: #fffbf53b;
 }
 .is-mobile {
-  width: 100vw;
+  width: 100%;
+  height: 100%;
   background-color: #c97d0c17 !important;
 }
 </style>

@@ -259,7 +259,7 @@ export default {
   height: 100%;
 }
 .mobile-sd-viewer {
-  height: 87%;
+  height: 85%;
   width: 100% !important;
   background-color: white;
 }
