@@ -37,7 +37,7 @@ export default {
     "downloadFormatIndex",
     "downloadRequested",
     "downloadTriggered",
-    "paramChanged"
+    "param"
   ],
   data() {
     return {
@@ -51,11 +51,13 @@ export default {
     };
   },
   watch: {
-    // paramChanged: function(newParam, oldParam) {
-    //   if (newParam != oldParam && oldParam != null) {
-    //     this.onParamChanged(newParam);
-    //   } else this.onParamChanged(oldParam);
-    // },
+    param: function(newParam, oldParam) {
+      if (newParam.value != oldParam.value || oldParam != null) {
+        console.log(newParam, oldParam);
+        this.onParamChanged(newParam);
+      }
+    },
+
     // whenever currentTopology changes, this function will run
     currentTopology: function(newTopo, oldTopo) {
       if (newTopo != oldTopo && oldTopo.id != null) {
@@ -108,6 +110,7 @@ export default {
         await this.initModel(this.topologies[i].ticket, this.topologies[i].id);
       }
       this.allParams = this.shapediver.parameters.get().data;
+      this.$emit("params-ready", this.allParams);
       await this.getPluginParams();
       await this.showPluginContents(
         this.currentTopology.id,
@@ -155,6 +158,16 @@ export default {
       } else {
         this.shapediver.scene.toggleGeometry([], paths);
       }
+    },
+
+    async onParamChanged(param) {
+      await this.shapediver.parameters.updateAsync({
+        name: param.name,
+        id: param.id,
+        value: param.value,
+        plugin: param.plugin
+      });
+      this.$emit("update:changed", false);
     },
 
     filterParamTabs(name) {

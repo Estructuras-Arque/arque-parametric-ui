@@ -18,11 +18,12 @@
 
       <div id="viewer" class="columns is-desktop is-gapless">
         <!-- control panel -->
-        <control-panel
+        <control-panel-dev
+          :params="params"
           :shapediver="shapediver"
-          :params-tabs="paramsTabs"
           @param-changed="onParamChanged"
           @topology-changed="onTopologyChanged"
+          :params-tabs="paramsTabs"
           :topologies="topologies"
           :window-size="windowSize"
         />
@@ -31,9 +32,11 @@
 
         <shapediver-viewer
           @shapediver-ready="onShapediverReady"
+          @params-ready="onParamsReady"
+          :param="param"
           @params-tabs-ready="onParamsTabsReady"
-          :params-tabs="paramsTabs"
           :current-topology="currentTopology"
+          :params-tabs="paramsTabs"
           :window-size="windowSize"
           :topologies="topologies"
           :download-format-index="downloadFormatIndex"
@@ -64,19 +67,21 @@
 </template>
 
 <script>
-import ControlPanel from "@/components/ControlPanel.vue";
+// import ControlPanel from "@/components/ControlPanel.vue";
 import DownloadsPanel from "@/components/DownloadsPanel.vue";
 import ShapediverViewer from "@/components/ShapediverViewer.vue";
 import Navbar from "@/components/Navbar.vue";
+import ControlPanelDev from "../components/ControlPanelDev.vue";
 
 export default {
   name: "Viewer",
   props: ["windowSize", "authenticated", "claims"],
   components: {
-    ControlPanel,
+    // ControlPanel,
     ShapediverViewer,
     DownloadsPanel,
-    Navbar
+    Navbar,
+    ControlPanelDev
   },
   data() {
     return {
@@ -160,6 +165,7 @@ export default {
         }
       ],
       param: {},
+      params: [],
       downloadsParamsIndex: 0,
       userParamsIndex: 0,
       shapediver: null,
@@ -306,20 +312,22 @@ export default {
         return detail.plugin == this.currentTopology.id;
       });
     },
-
+    onParamsReady(params) {
+      this.params = params;
+    },
     onParamsTabsReady(value) {
       this.paramsTabsReady = value;
     },
 
     async onParamChanged(param) {
       this.param = param; // console.log("param changed");
-      await this.shapediver.parameters.updateAsync({
-        name: param.name,
-        id: param.id,
-        value: param.value,
-        plugin: param.plugin
-      });
-      await this.getPluginDetails();
+      // await this.shapediver.parameters.updateAsync({
+      //   name: param.name,
+      //   id: param.id,
+      //   value: param.value,
+      //   plugin: param.plugin
+      // });
+      // await this.getPluginDetails();
     },
 
     // async onFormatChanged(index) {

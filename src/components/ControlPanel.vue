@@ -167,7 +167,14 @@ export default {
   components: {
     simplebar
   },
-  props: ["windowSize", "topologies", "shapediver", "paramsTabs", "details"],
+  props: [
+    "windowSize",
+    "topologies",
+    "shapediver",
+    "paramsTabs",
+    "details",
+    "params"
+  ],
   data() {
     return {
       isOpen: 2,
