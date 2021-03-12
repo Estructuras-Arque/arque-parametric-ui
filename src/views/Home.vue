@@ -49,13 +49,98 @@
       </div>
 
       <!-- Hero footer: will stick at the bottom -->
-      <div class="hero-foot">
+      <div class="hero-foot has-background-dark">
         <footer class="footer has-background-dark py-5">
-          <div class="content has-text-centered">
-            <div class="columns is-mobile">
-              <div class="column has-background-light">Made with:</div>
-              <div class="column has-background-light">CopyWrite</div>
-              <div class="column has-background-light">Contacts location</div>
+          <div class="content has-text-centered has-background-dark">
+            <div class="columns is-mobile has-background-dark">
+              <div
+                class="column has-background-dark is-flex is-justify-content-space-between is-align-items-center"
+              >
+                <a
+                  href="https://www.rhino3d.com/6/new/grasshopper"
+                  target="_blank"
+                >
+                  <figure class="image is-48x48 mx-6">
+                    <img class="my-2" src="@/assets/rhino.png" />
+                  </figure> </a
+                ><a href="https://www.shapediver.com/" target="_blank">
+                  <figure class="image is-48x48 mx-6">
+                    <img
+                      class="mt-4"
+                      src="https://res.cloudinary.com/postman/image/upload/t_team_logo_pubdoc/v1/team/26cba4f348bf9e2d0049069d2f9fbb41fa16d501b32620229d83249cd6f651bd"
+                    />
+                  </figure> </a
+                ><a href="https://geometrygym.wordpress.com/" target="_blank">
+                  <figure class="image is-48x48 mx-6">
+                    <img class="mt-4" src="@/assets/GeometryGym.png" />
+                  </figure> </a
+                ><a href="https://vuejs.org/" target="_blank">
+                  <figure class="image is-32x32 mx-6">
+                    <img class="mt-1" src="@/assets/logo.png" />
+                  </figure> </a
+                ><a href="https://www.buildingsmart.org/" target="_blank">
+                  <figure class="image is-32x32 mx-6">
+                    <img
+                      class="mt-1"
+                      src="//geometrygym.files.wordpress.com/2020/02/building-smart-logo.png?w=225"
+                    />
+                  </figure>
+                </a>
+              </div>
+              <div
+                class="column is-one-fifth has-background-dark is-flex is-justify-content-space-between is-align-items-center"
+              >
+                <a
+                  href="https://linkedin.com/showcase/arque-spatial-systems-sl"
+                  class="mx-6 is-small"
+                  target="_blank"
+                >
+                  <b-icon
+                    type="is-grey"
+                    size="is-medium"
+                    pack="fab"
+                    icon="linkedin-in"
+                  ></b-icon> </a
+                ><a
+                  href="https://github.com/christiandimitri/"
+                  class="is-small"
+                  target="_blank"
+                >
+                  <b-icon
+                    type="is-grey"
+                    size="is-medium"
+                    pack="fab"
+                    icon="github-alt"
+                  ></b-icon> </a
+                ><a
+                  href="mailto:spatial@estructurasarque.com"
+                  class="mx-6 is-small"
+                  target="_blank"
+                >
+                  <b-icon
+                    type="is-grey"
+                    size="is-medium"
+                    pack="fas"
+                    icon="envelope"
+                  ></b-icon>
+                </a>
+              </div>
+              <div class="column has-background-dark">
+                <p id="license-released" class="subtitle is-7 has-text-grey">
+                  Released under the
+                  <a href="https://opensource.org/licenses/MIT" target="_blank"
+                    ><strong class="has-text-grey-light">MIT License</strong></a
+                  >
+                </p>
+                <p id="author" class="subitile is-7 has-text-grey">
+                  © 2020 ARQUÉ SPATIAL SYSTEMS / APP BY
+                  <a href="https://chrisdimi.me/" target="_blank"
+                    ><strong class="has-text-grey-light"
+                      >CHRISTIAN DIMITRI</strong
+                    ></a
+                  >
+                </p>
+              </div>
             </div>
           </div>
         </footer>

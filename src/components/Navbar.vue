@@ -32,14 +32,14 @@
     <template #end>
       <b-navbar-item tag="div">
         <div v-if="authenticated" class="buttons">
-          <button
+          <!-- <button
             class="button is-light rounded ml-2"
             :class="$router.currentRoute.fullPath == '/app' ? '' : 'is-hovered'"
             @click="$router.push({ name: 'Profile' })"
           >
             <b-icon icon="user-circle" size="is-large" type="is-primary">
             </b-icon>
-          </button>
+          </button> -->
           <a class="button is-light" @click="logout">
             <b-icon icon="sign-out-alt" size="is-large" type="is-primary" />
           </a>
