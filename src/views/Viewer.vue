@@ -95,6 +95,7 @@ export default {
             "System Height (m)",
             "Arch Height (m)",
             "Pich Height (m)",
+            "Cone Height (m)",
             "Minimum Radius (m)",
             "Tubes Diameter (mm)",
             "Tubes Thickness (mm)"
@@ -251,7 +252,7 @@ export default {
           details: [],
           index: 4,
           ticket:
-            "1d689b865b2e266c8a1035649bb7c9714a57fd61a70903b2b0ab0fefd5dc7ffe98d15f2a85dd4e38d466e51d0a0297b3de94ac910246aadcb31b07ed82091bda5be8dc515d7912e9a27c1c4f922b32cf8a20a8823e83ebf3356e89b0f31b8a93ec1cf154f50ad5e756916765749ef4687b2f75543c3e-d54abe92e68eba42629cd36ec295d8f7",
+            "647aea219fd68c70943674b708d6b0a8ee807136017ee53d0797a1036580cf2dd67dd25dfc33f77d59cfb5b9833f3630a61cf1481ea8139d22b0789711f0f7bc042db8277b0d39f4ff82a5ab0d6ae550b0bd9f4bcc5ae76c3eae15de8a519f4ef3d710f87a71147dae487856a058efbaea2a5e0f2bde-f1dbfe2cd53244d155afb9d8df995747",
           icon: ""
         }
       ],
