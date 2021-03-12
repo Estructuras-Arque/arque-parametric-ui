@@ -157,6 +157,14 @@ export default {
           ],
           params: [],
           displayed: false
+        },
+        {
+          name: "Rulers",
+          icon: "ruler",
+          index: 4,
+          names: ["Rulers Offset (m)", "Rulers Size (m)"],
+          params: [],
+          displayed: false
         }
       ],
       param: {},
