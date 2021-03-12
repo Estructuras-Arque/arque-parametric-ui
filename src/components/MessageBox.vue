@@ -11,7 +11,7 @@
           focused
           class="control mx-2"
           tag="a"
-          href="mailto:spatialframes@gmail.com?cc=someoneelse@theirsite.com, another@thatsite.com, me@mysite.com&bcc=lastperson@theirsite.com&subject=Message%20Title&body=Name:%20%0D%0ASurname:%20%0D%0ACompany:%20%0D%0ACountry:%20%0D%0AMessage:"
+          href="mailto:spatial@estructurasarque.com?cc=spatialframes@gmail.com&bcc=albertjimenez7@hotmail.com&subject=Message%20Title&body=Name:%20%0D%0ASurname:%20%0D%0ACompany:%20%0D%0ACountry:%20%0D%0AMessage:"
           target="_blank"
           icon-left="envelope"
         >
