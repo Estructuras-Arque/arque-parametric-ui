@@ -2,7 +2,7 @@
   <div>
     <b-message class="mb-0" :class="isMobile ? 'is-mobile' : ''" type="is-info">
       <div
-        class="is-flex is-flex-direction-row is-justify-content-space-evenly is-align-items-center"
+        class="is-flex is-flex-direction-row is-align-items-center"
         :class="isMobile ? 'is-thirdquarterwidth' : ''"
       >
         <b-button
@@ -16,7 +16,10 @@
           icon-left="envelope"
         >
         </b-button>
-        <p class="is-size-7 pl-2 has-text-weight-semibold is-pulled-left">
+        <p
+          class="pl-2 has-text-weight-semibold is-pulled-left"
+          :class="isMobile ? 'is-size-8' : 'is-size-7'"
+        >
           Feel free to contact us at anytime, we would love to help you optimize
           your best solutions,
         </p>
@@ -33,8 +36,11 @@ export default {
 </script>
 
 <style lang="scss">
+.is-size-8 {
+  font-size: 0.55rem !important;
+}
 .is-thirdquarterwidth {
-  width: 70%;
+  width: 100%;
 }
 .message-body {
   padding-top: 0.8em;

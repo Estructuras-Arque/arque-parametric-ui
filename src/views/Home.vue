@@ -56,7 +56,7 @@
               class="container is-flex is-flex-direction-column has-background-dark p-3"
             >
               <div
-                class="is-flex is-justify-content-center has-background-dark is-flex is-align-items-center mb-5"
+                class="is-flex is-justify-content-center has-background-dark is-align-items-center mb-5"
               >
                 <a
                   href="https://linkedin.com/showcase/arque-spatial-systems-sl"
@@ -94,31 +94,44 @@
                 </a>
               </div>
               <div
-                class="has-background-dark is-flex is-justify-content-center is-align-items-center mb-5"
+                class="has-background-dark is-flex is-justify-content-center mb-5"
               >
                 <a
+                  class="is-32x32"
                   href="https://www.rhino3d.com/6/new/grasshopper"
                   target="_blank"
                 >
                   <figure class="image is-32x32">
                     <img class="" src="@/assets/rhino.png" />
                   </figure> </a
-                ><a href="https://www.shapediver.com/" target="_blank">
+                ><a
+                  class="is-32x32"
+                  href="https://www.shapediver.com/"
+                  target="_blank"
+                >
                   <figure class="image is-32x32">
                     <img
                       class=""
                       src="https://res.cloudinary.com/postman/image/upload/t_team_logo_pubdoc/v1/team/26cba4f348bf9e2d0049069d2f9fbb41fa16d501b32620229d83249cd6f651bd"
                     />
                   </figure> </a
-                ><a href="https://geometrygym.wordpress.com/" target="_blank">
+                ><a
+                  class="is-32x32"
+                  href="https://geometrygym.wordpress.com/"
+                  target="_blank"
+                >
                   <figure class="image is-32x32">
                     <img class="" src="@/assets/GeometryGym.png" />
                   </figure> </a
-                ><a href="https://vuejs.org/" target="_blank">
+                ><a class="is-32x32" href="https://vuejs.org/" target="_blank">
                   <figure class="image is-32x32">
                     <img class="" src="@/assets/logo.png" />
                   </figure> </a
-                ><a href="https://www.buildingsmart.org/" target="_blank">
+                ><a
+                  class="is-32x32"
+                  href="https://www.buildingsmart.org/"
+                  target="_blank"
+                >
                   <figure class="image is-32x32">
                     <img
                       class=""
@@ -221,6 +234,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.is-32x32 {
+  margin-right: auto;
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+}
 .is-centered {
   margin-right: auto;
   margin-left: auto;
