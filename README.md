@@ -1,4 +1,4 @@
-# arque-parameteric-ui
+# Arque Shapediver app v0.1.1
 
 ## Project setup
 ```
